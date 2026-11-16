@@ -29,6 +29,7 @@
   --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
   --font-serif: var(--font-playfair), "Playfair Display", Georgia, serif;
   --font-sans: var(--font-inter), Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-script: var(--font-pinyon), "Pinyon Script", cursive;
   --font-arabic: var(--font-amiri), "Amiri", "Geeza Pro", "Noto Naskh Arabic", serif;
 
   /* Motion */
@@ -334,4 +335,18 @@
       radial-gradient(1px 1px at 4% 91%, rgb(213 185 138 / 0.6), transparent 60%);
     background-size: 520px 520px;
   }
+}
+
+/* Music button equaliser */
+.eq-bar {
+  height: 100%;
+  transform-origin: bottom;
+  animation: eq 0.9s ease-in-out infinite alternate;
+}
+@keyframes eq {
+  0% { transform: scaleY(0.3); }
+  100% { transform: scaleY(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .eq-bar { animation: none; transform: scaleY(0.7); }
 }

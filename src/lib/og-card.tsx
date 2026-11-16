@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element -- ImageResponse (Satori) renders plain <img>; next/image does not apply. */
 import { ImageResponse } from "next/og";
 import { wedding } from "@/config/wedding";
-import type { Invite } from "@/lib/invites";
+import type { Invite } from "@/types/wedding";
 import { loadOgAssets, moonBackground } from "@/lib/og";
 import { formatFullDate } from "@/lib/time";
 
@@ -30,8 +30,8 @@ export function renderInviteCard(invite: Invite) {
         <div
           style={{
             position: "absolute",
-            right: -30,
-            top: -70,
+            right: -90,
+            top: -150,
             width: 300,
             height: 300,
             borderRadius: 9999,
@@ -62,10 +62,10 @@ export function renderInviteCard(invite: Invite) {
           <div style={{ fontSize: 24, letterSpacing: 10, color: "#D5B98A", fontStyle: "normal", fontWeight: 500, textTransform: "uppercase" }}>
             {wedding.invitation.eyebrow}
           </div>
-          <div style={{ display: "flex", alignItems: "baseline", fontSize: 150, fontStyle: "italic", marginTop: 18, lineHeight: 1 }}>
-            <span>{couple.partnerOne.firstName}</span>
-            <span style={{ fontSize: 80, color: "#D5B98A", margin: "0 28px" }}>&amp;</span>
-            <span>{couple.partnerTwo.firstName}</span>
+          <div style={{ display: "flex", alignItems: "baseline", fontSize: 148, marginTop: 10, lineHeight: 1.15 }}>
+            <span style={{ fontFamily: "Pinyon" }}>{couple.partnerOne.firstName}</span>
+            <span style={{ fontSize: 80, fontStyle: "italic", color: "#D5B98A", margin: "0 26px" }}>&amp;</span>
+            <span style={{ fontFamily: "Pinyon" }}>{couple.partnerTwo.firstName}</span>
           </div>
           <div style={{ fontSize: 22, letterSpacing: 8, marginTop: 22, fontStyle: "normal", fontWeight: 500, textTransform: "uppercase", color: "#D5B98A" }}>
             {invite.events.map((e) => e.name).join("  ·  ")}

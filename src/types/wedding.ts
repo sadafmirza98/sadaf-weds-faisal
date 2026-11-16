@@ -66,7 +66,8 @@ export interface WeddingEvent {
   start: LocalMoment;
   /** Optional end time; ignored when `start` has no time. */
   end?: LocalDateTime;
-  venue: Venue;
+  /** Optional while unconfirmed — the card shows `celebrations.venueToBeAnnounced`. */
+  venue?: Venue;
   /** Optional; the attire row is hidden when omitted. */
   dressCode?: DressCode;
   description: string;
@@ -75,23 +76,24 @@ export interface WeddingEvent {
    * Reception. Shown on the event card and in the day-by-day itinerary.
    */
   schedule?: ScheduleItem[];
-  /** Countdown eyebrow when this is the guest's main event, e.g. "Until we say Qubool Hai". */
-  countdownLabel?: string;
 }
 
-/** One personalised invite link: /i/<code> shows only these events. */
-export interface InviteLink {
-  /** For your reference only (who this link is for) — never shown to guests. */
-  label: string;
-  /** Ids from `events` that this link shows. */
-  events: string[];
+/** What one guest's page shows. Built on the server; only these events reach the browser. */
+export interface Invite {
+  /** The guest's events, in config order. */
+  events: WeddingEvent[];
+  /** Their main event: the Nikah (weddingDate) when invited, otherwise their first event. */
+  primary: WeddingEvent;
 }
 
-export interface Invites {
-  /** Events shown by the plain link without a code ("/"). */
-  default: string[];
-  /** Code → invite. Each code is served at /i/<code>. Use hard-to-guess codes. */
-  links: Record<string, InviteLink>;
+/** Background music, started when the guest opens the invitation. */
+export interface MusicSettings {
+  /** YouTube video id (the part after youtu.be/). */
+  youtubeId: string;
+  /** Second to start from. */
+  start?: number;
+  /** 0–100. */
+  volume?: number;
 }
 
 export interface NavItem {
@@ -163,10 +165,11 @@ export interface WeddingConfig {
     intro: string;
     /** Shown in place of the time for events authored without one. */
     timeToBeAnnounced: string;
+    /** Shown in place of the venue for events without one. */
+    venueToBeAnnounced: string;
   };
-  events: WeddingEvent[];
-  /** Personalised links — who sees which events. */
-  invites: Invites;
+  /** Optional background music. */
+  music?: MusicSettings;
   countdown: {
     eyebrow: string;
     title: string;

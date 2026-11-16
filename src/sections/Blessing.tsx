@@ -66,7 +66,7 @@ export function Blessing() {
 function Family({ person }: { person: Person }) {
   return (
     <div className="flex flex-col items-center">
-      <p className="font-display text-[clamp(2rem,4.5vw,2.75rem)] italic leading-tight text-ivory">{person.fullName}</p>
+      <p className="font-script text-[clamp(2.4rem,5.5vw,3.3rem)] leading-tight text-ivory">{person.fullName}</p>
       {person.family && (
         <>
           <p className="eyebrow mt-4 text-[0.6rem] text-ivory/50">{person.family.relation}</p>

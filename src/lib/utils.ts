@@ -33,3 +33,8 @@ export const safeStorage = {
     }
   },
 };
+
+/** ["Nikah", "Reception", "Walima"] → "Nikah, Reception and Walima". */
+export function joinNames(names: string[], last = " and ") {
+  return names.length <= 1 ? names.join("") : `${names.slice(0, -1).join(", ")}${last}${names[names.length - 1]}`;
+}

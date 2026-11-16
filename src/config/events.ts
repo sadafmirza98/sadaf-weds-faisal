@@ -1,0 +1,74 @@
+import type { Venue, WeddingEvent } from "@/types/wedding";
+
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ *  EVENTS — server-side only.
+ *
+ *  Never import this file from a "use client" component. Pages pick the events
+ *  on a guest's invite here and pass only those to the browser, so a guest's
+ *  page never contains the details of events they are not invited to.
+ *
+ *  Times are wall-clock times in `wedding.timeZone`: "YYYY-MM-DDTHH:mm", or
+ *  "YYYY-MM-DD" while the time is unknown. List events in date order.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
+const banquet: Venue = {
+  name: "The Grand FM Banquet",
+  address:
+    "Dilshad Banquet, 1st Floor, E.E. Heights, above Jaffer Bhai's Delhi Darbar Restaurant, Jogeshwari West, Mumbai 400102",
+  mapsUrl: "https://maps.app.goo.gl/AbPtDVY8sa2EQvLb8",
+};
+
+export const events: WeddingEvent[] = [
+  {
+    id: "haldi",
+    kicker: "The Glow",
+    name: "Haldi",
+    start: "2026-12-17T15:00", // ✎ confirm time ("probably 3 pm")
+    // venue: { name: "…", address: "…", mapsUrl: "…" },  ✎ add when known
+    description: "An afternoon of turmeric, laughter and blessings with our families before the wedding.",
+  },
+  {
+    id: "mehndi",
+    kicker: "The Henna",
+    name: "Mehndi",
+    start: "2026-12-17T15:00", // ✎ confirm time ("probably 3 pm")
+    // venue: { … },  ✎ add when known
+    description: "Henna, laughter and celebration with our families and friends.",
+  },
+  {
+    id: "nikah",
+    kicker: "Qubool Hai",
+    name: "Nikah",
+    start: "2026-12-19T19:00",
+    end: "2026-12-19T20:00",
+    venue: banquet,
+    description:
+      "We will be joined in marriage in the presence of our families and loved ones. Your presence and your duas would mean the world to us.",
+  },
+  {
+    id: "reception",
+    kicker: "The Celebration",
+    name: "Reception",
+    start: "2026-12-19T20:00",
+    end: "2026-12-19T23:00",
+    venue: banquet,
+    description: "An evening of celebration with our families and friends, ending with the Bidai.",
+    schedule: [{ time: "2026-12-19T23:00", title: "Bidai", note: "The bride's farewell" }],
+  },
+  {
+    id: "walima",
+    kicker: "The Feast",
+    name: "Walima",
+    start: "2026-12-20T19:00",
+    venue: banquet,
+    description: "Join us for our Walima, the wedding feast, as we celebrate our first day as husband and wife.",
+  },
+];
+
+/**
+ * What the plain link (https://<your-domain>/) shows. Every other guest gets a
+ * personalised link from the admin page — see README › "Invite links".
+ */
+export const defaultInviteEvents: string[] = ["nikah", "reception", "walima"];

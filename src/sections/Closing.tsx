@@ -7,7 +7,7 @@ import { wedding } from "@/config/wedding";
 import { useInvite } from "@/components/layout/InviteProvider";
 import { Reveal } from "@/components/animations/Reveal";
 import { SakuraBurst } from "@/components/animations/SakuraBurst";
-import { SplitText } from "@/components/animations/SplitText";
+import { ScriptName } from "@/components/animations/ScriptName";
 import { Illustration } from "@/components/art/Illustration";
 import { Ornament } from "@/components/art/Ornament";
 import { WaxSeal } from "@/components/art/WaxSeal";
@@ -61,10 +61,10 @@ export function Closing() {
           <p className="mt-10 font-display text-lg italic text-ivory/55">{closing.signOff}</p>
         </Reveal>
 
-        <h2 id="closing-title" className="display-title mt-6 text-[clamp(3.5rem,13vw,9rem)] italic leading-[0.9]">
-          <SplitText text={couple.partnerOne.firstName} inView stagger={0.05} />
+        <h2 id="closing-title" className="display-title mt-6 text-[clamp(4rem,15vw,10rem)] leading-[1.05]">
+          <ScriptName text={couple.partnerOne.firstName} inView />
           <span className="gold-text mx-[0.15em] text-[0.5em] not-italic">&amp;</span>
-          <SplitText text={couple.partnerTwo.firstName} inView delay={0.3} stagger={0.05} />
+          <ScriptName text={couple.partnerTwo.firstName} inView delay={0.5} />
         </h2>
 
         <Reveal delay={0.2}>

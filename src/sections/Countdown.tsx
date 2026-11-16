@@ -3,7 +3,6 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useMemo, useSyncExternalStore } from "react";
 import { wedding } from "@/config/wedding";
-import { useInvite } from "@/components/layout/InviteProvider";
 import { Reveal } from "@/components/animations/Reveal";
 import { CrimsonMoon } from "@/components/art/CrimsonMoon";
 import { Illustration } from "@/components/art/Illustration";
@@ -71,11 +70,12 @@ function useGuestLocalTime(target: Date, enabled: boolean) {
 
 /** SECTION E — live countdown to the configured moment in the configured timezone. */
 export function Countdown() {
-  const { primary } = useInvite();
-  const target = useMemo(() => zonedTimeToUtc(primary.start, wedding.timeZone), [primary.start]);
+  // Every guest counts down to the Nikah (weddingDate), whatever their invite.
+  const moment = wedding.weddingDate;
+  const target = useMemo(() => zonedTimeToUtc(moment, wedding.timeZone), [moment]);
   const left = useCountdown(target.getTime());
   // Date-only start → count to the start of the day; no clock time is shown.
-  const timed = hasTime(primary.start);
+  const timed = hasTime(moment);
   const guestLocal = useGuestLocalTime(target, timed);
   const done = left !== null && left.total === 0;
   const { countdown } = wedding;
@@ -92,13 +92,13 @@ export function Countdown() {
 
       <div className="shell text-center">
         <Reveal>
-          <p className="eyebrow">{primary.countdownLabel ?? countdown.eyebrow}</p>
+          <p className="eyebrow">{countdown.eyebrow}</p>
           <h2 id="countdown-title" className="display-title mx-auto mt-6 max-w-3xl text-[clamp(2.6rem,6.5vw,4.75rem)] italic text-balance">
             {done ? countdown.celebrationTitle : countdown.title}
           </h2>
           <p className="mt-6 text-[0.7rem] uppercase tracking-[0.32em] text-ivory/65">
-            {formatFullDate(primary.start)}
-            {timed && ` · ${formatTime(primary.start)} ${zoneLabel}`}
+            {formatFullDate(moment)}
+            {timed && ` · ${formatTime(moment)} ${zoneLabel}`}
           </p>
           {guestLocal && <p className="mt-2 font-display text-base italic text-ivory/45">That is {guestLocal} where you are.</p>}
         </Reveal>

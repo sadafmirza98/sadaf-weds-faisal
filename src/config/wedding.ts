@@ -1,4 +1,4 @@
-import type { Venue, WeddingConfig } from "@/types/wedding";
+import type { WeddingConfig } from "@/types/wedding";
 
 /**
  * ─────────────────────────────────────────────────────────────────────────────
@@ -11,14 +11,6 @@ import type { Venue, WeddingConfig } from "@/types/wedding";
  *  Images live in /public — see README › "Replacing images".
  * ─────────────────────────────────────────────────────────────────────────────
  */
-
-/** Both celebrations are held here. */
-const banquet: Venue = {
-  name: "The Grand FM Banquet",
-  address:
-    "Dilshad Banquet, 1st Floor, E.E. Heights, above Jaffer Bhai's Delhi Darbar Restaurant, Jogeshwari West, Mumbai 400102",
-  mapsUrl: "https://maps.app.goo.gl/AbPtDVY8sa2EQvLb8",
-};
 
 export const wedding: WeddingConfig = {
   couple: {
@@ -37,7 +29,7 @@ export const wedding: WeddingConfig = {
 
   timeZone: "Asia/Kolkata",
   timeZoneLabel: "IST",
-  // The Nikah. Guests invited to it count down to it; others count down to their first event.
+  // The Nikah. Every guest's countdown runs to this moment.
   weddingDate: "2026-12-19T19:00",
   locationLine: "Mumbai, India",
 
@@ -48,7 +40,7 @@ export const wedding: WeddingConfig = {
     },
     eyebrow: "Together with their families",
     // {events} becomes the guest's invited events, e.g. "Nikah, Reception and Walima".
-    message: "request the honour of your presence at their {events}, beneath a crimson moon and a sky of falling petals.",
+    message: "request the honour of your presence at their {events}, as they begin their life together.",
     openLabel: "Open the invitation",
   },
 
@@ -66,66 +58,18 @@ export const wedding: WeddingConfig = {
 
   celebrations: {
     eyebrow: "Celebrations",
-    title: "Beneath the crimson moon",
+    title: "Join us in celebration",
     intro: "Everything you need to find your way to us.",
     timeToBeAnnounced: "Timings to follow",
-  },
-
-  // Add Haldi and Mehndi here once their dates, times and venue are fixed,
-  // then add their ids to the invite links below.
-  events: [
-    {
-      id: "nikah",
-      kicker: "Qubool Hai",
-      name: "Nikah",
-      start: "2026-12-19T19:00",
-      end: "2026-12-19T20:00",
-      venue: banquet,
-      countdownLabel: "Until we say Qubool Hai",
-      description:
-        "We will be joined in marriage in the presence of our families and loved ones. Your presence and your duas would mean the world to us.",
-    },
-    {
-      id: "reception",
-      kicker: "The Celebration",
-      name: "Reception",
-      start: "2026-12-19T20:00",
-      end: "2026-12-19T23:00",
-      venue: banquet,
-      description: "An evening of celebration with our families and friends, ending with the Bidai.",
-      schedule: [{ time: "2026-12-19T23:00", title: "Bidai", note: "The bride's farewell" }],
-    },
-    {
-      id: "walima",
-      kicker: "The Feast",
-      name: "Walima",
-      start: "2026-12-20T19:00",
-      venue: banquet,
-      description: "Join us for our Walima, the wedding feast, as we celebrate our first day as husband and wife.",
-    },
-  ],
-
-  /**
-   * Personalised links. Send each guest the link for their group:
-   *   https://<your-domain>/i/<code>  shows only that group's events.
-   * The plain link (https://<your-domain>/) shows `default`.
-   * Codes are random so guests cannot guess each other's links.
-   */
-  invites: {
-    default: ["nikah", "reception", "walima"],
-    links: {
-      "nc73rr": { label: "Everything (add Haldi & Mehndi once listed)", events: ["nikah", "reception", "walima"] },
-      "r6hfpr": { label: "Nikah only", events: ["nikah"] },
-      "qbfp3u": { label: "Walima only", events: ["walima"] },
-    },
+    venueToBeAnnounced: "Venue to follow",
   },
 
   countdown: {
-    eyebrow: "Until we celebrate together",
+    eyebrow: "Until we say Qubool Hai",
     title: "Counting every moment",
     celebrationTitle: "Alhamdulillah — the day is here",
     celebrationMessage:
-      "The moment has arrived. Thank you for your love and your duas — we will see you under the crimson moon.",
+      "The moment has arrived. Thank you for your love and your duas — we cannot wait to celebrate with you.",
   },
 
   saveTheDate: {
@@ -143,6 +87,12 @@ export const wedding: WeddingConfig = {
     maxAttendees: 4, // ✎ confirm — guests per reply, including the guest
   },
 
+  // Starts when the guest taps the wax seal; a button lets them pause it.
+  music: {
+    youtubeId: "RMMNmCTEkWc", // "Suzume (Instrumental)" — https://youtu.be/RMMNmCTEkWc
+    volume: 55,
+  },
+
   contact: {
     eyebrow: "For any queries",
     phone: "+91 84337 83337", // also receives the WhatsApp RSVPs
@@ -152,7 +102,7 @@ export const wedding: WeddingConfig = {
     eyebrow: "With all our love",
     message:
       "Thank you for the love, the laughter and the duas that brought us here. Your presence is the greatest gift we could ask for, and we cannot wait to celebrate with you.",
-    signOff: "Until the moon rises,",
+    signOff: "With love and duas,",
   },
 
   nav: [
@@ -173,12 +123,14 @@ export const wedding: WeddingConfig = {
   },
 
   seo: {
-    siteUrl: "https://sadaf-and-faisal.vercel.app", // ✎ REPLACE with your real domain (or set NEXT_PUBLIC_SITE_URL)
+    // Fallback only: Netlify/Vercel builds use the deployed address automatically,
+    // or set NEXT_PUBLIC_SITE_URL for a custom domain.
+    siteUrl: "https://sadaf-weds-faisal.netlify.app",
     // Fallback title; each invite link gets "Sadaf & Faisal — <its main date>".
     title: "Sadaf & Faisal — Wedding Invitation",
-    description:
-      "You are invited to the Nikah & Reception of Sadaf & Faisal on 19 December 2026 and their Walima on 20 December 2026 in Mumbai. Open the invitation to RSVP.",
-    ogImageAlt: "Sadaf & Faisal wedding invitation beneath a crimson moon",
+    // Fallback only — each page describes the guest's own events.
+    description: "You are invited to the wedding celebrations of Sadaf & Faisal in Mumbai. Open the invitation to RSVP.",
+    ogImageAlt: "Sadaf & Faisal wedding invitation",
     allowIndexing: false, // private invitation by default
   },
 };

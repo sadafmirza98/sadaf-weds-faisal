@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Amiri, Cormorant_Garamond, Inter, Playfair_Display } from "next/font/google";
+import { Amiri, Cormorant_Garamond, Inter, Pinyon_Script, Playfair_Display } from "next/font/google";
 import { wedding } from "@/config/wedding";
 import { siteUrl } from "@/lib/site";
 import "./globals.css";
@@ -23,6 +23,14 @@ const playfair = Playfair_Display({
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
+});
+
+/** Calligraphy face for the couple's names. */
+const pinyon = Pinyon_Script({
+  variable: "--font-pinyon",
+  subsets: ["latin"],
+  weight: "400",
   display: "swap",
 });
 
@@ -73,7 +81,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${playfair.variable} ${inter.variable} ${amiri.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${cormorant.variable} ${playfair.variable} ${inter.variable} ${amiri.variable} ${pinyon.variable}`} suppressHydrationWarning>
       <head>
         {/* Returning guests / deep links skip the invitation cover before first paint. */}
         <script dangerouslySetInnerHTML={{ __html: skipGateScript }} />

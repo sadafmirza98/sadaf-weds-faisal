@@ -2,14 +2,14 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion } from "motion/react";
-import { AlertCircle, Check, MessageCircle, Minus, Pencil, Plus } from "lucide-react";
+import { AlertCircle, MessageCircle, Minus, Pencil, Plus } from "lucide-react";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { wedding } from "@/config/wedding";
 import { useInvite } from "@/components/layout/InviteProvider";
 import { WaxSeal } from "@/components/art/WaxSeal";
 import { rsvpSchema, type RsvpFormInput, type RsvpFormValues } from "@/components/rsvp/schema";
-import { formatLongDate, parseLocal, weekdayOf, monthOf, zonedTimeToUtc } from "@/lib/time";
+import { formatLongDate, zonedTimeToUtc } from "@/lib/time";
 import { rsvpMessage, whatsappUrl } from "@/lib/whatsapp";
 import { cn } from "@/lib/utils";
 
@@ -17,13 +17,12 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 const noopSubscribe = () => () => {};
 const deadlineMs = wedding.rsvp.deadline ? zonedTimeToUtc(wedding.rsvp.deadline, wedding.timeZone).getTime() : null;
 
-const defaultsFor = (eventIds: string[]): RsvpFormInput => ({
+const defaults: RsvpFormInput = {
   name: "",
   attending: undefined as unknown as "yes",
-  events: eventIds,
   attendees: 1,
   message: "",
-});
+};
 
 /**
  * RSVP without a backend: the form validates the reply, then hands it to
@@ -33,7 +32,6 @@ const defaultsFor = (eventIds: string[]): RsvpFormInput => ({
 export function RsvpForm() {
   const { rsvp, contact } = wedding;
   const invite = useInvite();
-  const defaults = defaultsFor(invite.events.map((e) => e.id));
   const closed = useSyncExternalStore(noopSubscribe, () => deadlineMs !== null && Date.now() > deadlineMs, () => false);
   const [ready, setReady] = useState<{ values: RsvpFormValues; text: string } | null>(null);
   const [opened, setOpened] = useState(false);
@@ -67,7 +65,7 @@ export function RsvpForm() {
 
   const onSubmit = (values: RsvpFormValues) => {
     setOpened(false);
-    setReady({ values, text: rsvpMessage(values) });
+    setReady({ values, text: rsvpMessage(values, invite.events) });
   };
 
   const edit = () => {
@@ -230,33 +228,6 @@ export function RsvpForm() {
                   transition={{ duration: 0.6, ease: EASE }}
                   className="space-y-9 overflow-hidden"
                 >
-                  {invite.events.length > 1 && (
-                    <fieldset aria-describedby={errors.events ? "rsvp-events-error" : undefined}>
-                      <legend className="eyebrow text-gold/90">Joining us for</legend>
-                      <div className="mt-4 grid gap-3">
-                        {invite.events.map((e) => {
-                          const p = parseLocal(e.start);
-                          return (
-                            <label
-                              key={e.id}
-                              className="flex min-h-14 cursor-pointer items-center gap-3 border border-ivory/15 px-4 py-3 text-ivory/70 transition-colors duration-300 hover:border-gold/50 has-[:checked]:border-gold has-[:checked]:bg-wine/35 has-[:checked]:text-ivory has-[:focus-visible]:outline has-[:focus-visible]:outline-1 has-[:focus-visible]:outline-offset-4 has-[:focus-visible]:outline-gold"
-                            >
-                              <input type="checkbox" value={e.id} className="peer sr-only" {...register("events")} />
-                              <span aria-hidden="true" className="grid size-4 shrink-0 place-items-center border border-ivory/40 peer-checked:border-gold peer-checked:[&>svg]:block">
-                                <Check className="hidden size-3 text-gold" />
-                              </span>
-                              <span className="font-display text-lg italic">{e.name}</span>
-                              <span className="ml-auto text-right text-[0.65rem] uppercase tracking-[0.2em] text-ivory/45">
-                                {weekdayOf(e.start).slice(0, 3)} {p.day} {monthOf(e.start).slice(0, 3)}
-                              </span>
-                            </label>
-                          );
-                        })}
-                      </div>
-                      <ErrorText id="rsvp-events-error" message={errors.events?.message} />
-                    </fieldset>
-                  )}
-
                   <Controller
                     control={control}
                     name="attendees"

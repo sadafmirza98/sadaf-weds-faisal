@@ -1,17 +1,15 @@
 "use client";
 
-import { createContext, useContext, useMemo } from "react";
-import { resolveInvite, type Invite } from "@/lib/invites";
+import { createContext, useContext } from "react";
+import type { Invite } from "@/types/wedding";
 
 const InviteContext = createContext<Invite | null>(null);
 
 /**
- * Makes the guest's invite (which events they see) available to every section.
- * Resolved from config by code, so server and client render the same thing.
+ * The guest's invite (which events they see). Resolved on the server and
+ * passed in, so only the invited events ever reach the browser.
  */
-export function InviteProvider({ code, children }: { code: string | null; children: React.ReactNode }) {
-  const invite = useMemo(() => resolveInvite(code), [code]);
-  if (!invite) throw new Error(`Unknown invite code "${code}"`);
+export function InviteProvider({ invite, children }: { invite: Invite; children: React.ReactNode }) {
   return <InviteContext.Provider value={invite}>{children}</InviteContext.Provider>;
 }
 

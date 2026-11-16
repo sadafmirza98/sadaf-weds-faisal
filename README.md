@@ -1,4 +1,4 @@
-# Crimson Moon — Wedding Invitation
+# Sadaf & Faisal — Wedding Invitation
 
 A cinematic, dark-burgundy wedding invitation website built with Next.js 16, React 19, Tailwind CSS 4 and Motion. It opens with a sealed invitation cover. Breaking the wax seal parts two curtains to reveal the site: a hero beneath a crimson moon, a Quran verse and the families, the celebrations with each evening's timeline, a live countdown, a "Save the Date" calendar, an RSVP that is sent on WhatsApp, and a closing note.
 
@@ -32,23 +32,18 @@ Useful URLs while testing:
 
 ---
 
-## Deploying
+## Deploying (Netlify)
 
-The site needs no environment variables and no backend. RSVPs are sent on WhatsApp (see *RSVP*).
+1. In Netlify: **Add new site → Import an existing project → GitHub →** `sadafmirza98/sadaf-weds-faisal`. Netlify reads `netlify.toml` and applies its Next.js adapter automatically.
+2. **Site configuration → Environment variables →** add `INVITE_SECRET` with a long random value (`openssl rand -hex 16`). Do this **before the first build**, and never change it once links are sent.
+3. Deploy. Your private admin page is `https://<your-site>.netlify.app/admin/<INVITE_SECRET>`.
 
-**Vercel:** import the repository and accept the defaults. The canonical/OG URL falls back to the project's production domain automatically.
+Link previews use the Netlify address automatically. For a custom domain, also set `NEXT_PUBLIC_SITE_URL`. Without `INVITE_SECRET` the site still deploys, but only the plain link works and there is no admin page.
 
-**Netlify:** import the repository. `netlify.toml` already sets the build command, and Netlify applies its Next.js adapter automatically.
-
-Optional variables (see [`.env.example`](.env.example)):
-
-| Variable                    | Purpose                                                      |
-| --------------------------- | ------------------------------------------------------------ |
-| `NEXT_PUBLIC_SITE_URL`      | Absolute URL used for canonical and Open Graph links         |
-
-`NEXT_PUBLIC_*` values are embedded in the browser bundle, so never put a secret key in one.
-
----
+| Variable                | Purpose                                                       |
+| ----------------------- | ------------------------------------------------------------- |
+| `INVITE_SECRET`         | Required for invite links and the admin page (keep it private) |
+| `NEXT_PUBLIC_SITE_URL`  | Optional custom domain for canonical and link-preview URLs     |
 
 ## Customising the wedding details
 
@@ -57,16 +52,18 @@ Edit [`src/config/wedding.ts`](src/config/wedding.ts). Every placeholder is mark
 | Area                    | Config key                                           |
 | ----------------------- | ---------------------------------------------------- |
 | Names & monogram        | `couple`                                             |
-| Date & timezone         | `weddingDate`, `timeZone` (IANA, e.g. `Asia/Kolkata`), `timeZoneLabel` (e.g. `IST`) |
+| Date & timezone         | `weddingDate` (every guest's countdown target), `timeZone`, `timeZoneLabel` |
 | Bismillah               | `invitation.bismillah` (remove it to hide the line)   |
 | Invitation cover text   | `invitation`                                         |
 | Hero text               | `hero.message` (the line above the names lists the guest's events) |
 | Verse & families        | `blessing` (verse, reference); parents via `couple.partnerOne/Two.family` — the families block shows once set |
-| Events (any number)     | `events[]`: name, start/end, venue, optional dress code, description, optional `schedule[]` timeline |
+| Events (any number)     | [`src/config/events.ts`](src/config/events.ts) — name, start/end, optional venue, description, optional `schedule[]` (e.g. Bidai) |
+| Plain link's events     | `defaultInviteEvents` in `src/config/events.ts` |
+| Music                   | `music.youtubeId`, `music.volume` |
 | Google Maps links       | `events[].venue.mapsUrl` (optional; otherwise built from name + address) |
 | Countdown copy          | `countdown`                                          |
 | Save the Date calendar  | `saveTheDate` (the month comes from the guest's main event; every invited day gets a heart) |
-| Personalised links      | `invites` — see *Personalised invite links* |
+| Personalised links      | the admin page — see *Invite links* |
 | RSVP settings           | `rsvp`: optional deadline, max guests per reply          |
 | Contact & WhatsApp      | `contact.phone` — shown on the site and receives the WhatsApp RSVPs |
 | Closing message         | `closing`                                            |
@@ -103,32 +100,21 @@ The crimson moon and the wax seal are inline React components ([`CrimsonMoon.tsx
 
 ---
 
-## Personalised invite links
+## Invite links
 
-Different guests can be invited to different events. Each group gets its own link, and that link shows **only** their events: on the cover, in the hero, countdown, calendar hearts, event cards, itinerary, RSVP choices, and in the WhatsApp/iMessage link preview.
+Different guests can be invited to different events, for example Haldi and Nikah for one guest and only the Walima for another.
 
-```ts
-// src/config/wedding.ts
-invites: {
-  default: ["nikah", "reception", "walima"],          // the plain link  https://<domain>/
-  links: {
-    nc73rr: { label: "Everything", events: ["nikah", "reception", "walima"] },
-    r6hfpr: { label: "Nikah only", events: ["nikah"] },
-    qbfp3u: { label: "Walima only", events: ["walima"] },
-  },
-},
-```
+1. Open your private admin page: `https://<your-site>/admin/<INVITE_SECRET>`. Locally with `npm run dev` it is `/admin/local-dev-secret`, but those links only work on your computer.
+2. Tick the events for the guest. Optionally type their name.
+3. **Copy link** or **Send on WhatsApp** (opens WhatsApp with a ready message).
 
-- Send `https://<domain>/i/nc73rr` to the first group, `…/i/r6hfpr` to the second, and so on. `label` is for you only and is never shown to guests.
-- To add a group, add a line with a new random code. Every link is prebuilt at deploy time. An unknown code shows the 404 page.
-- To add an event (e.g. Haldi or Mehndi), add it to `events` and put its `id` in the links that should see it. The build fails if a link names an event that does not exist.
-- A guest's countdown targets the Nikah if they are invited to it, otherwise their first event.
+The guest's link shows only those events: the cover, hero, timeline, cards, calendar hearts, RSVP and link preview. **Other events' details are not in their page at all**, not even in the code, because pages are built on the server per invite. The same ticks always give the same link, and links cannot be guessed without `INVITE_SECRET`. Every guest's countdown runs to the Nikah (`weddingDate`).
 
-**Limit:** this decides what each guest *sees*. It is not a password. The site is static, so every event's details ship in the page's JavaScript, and a determined, technical guest could find them. Random codes stop guests from guessing other links.
+The plain link (`/`) shows `defaultInviteEvents`. To add an event, add it to `src/config/events.ts`. Links for every combination are built automatically, and existing links keep working.
 
 ## RSVP: sent on WhatsApp
 
-There is no backend. The form (React Hook Form + Zod) collects the guest's name, whether they can attend, which celebrations they will join, the number of guests and an optional note. It then shows the reply as a ready-written message with a **Send on WhatsApp** button. That button opens `https://wa.me/<contact.phone>?text=…`, and the guest presses send in WhatsApp.
+There is no backend. The form (React Hook Form + Zod) collects the guest's name, whether they can attend, the number of guests and an optional note. The message lists the events on the guest's invite automatically. It then shows the reply as a ready-written message with a **Send on WhatsApp** button. That button opens `https://wa.me/<contact.phone>?text=…`, and the guest presses send in WhatsApp.
 
 - Replies arrive in the WhatsApp chat of `contact.phone`. Nothing is stored by the site.
 - The site never claims a reply was sent. It says the reply reaches the couple once the guest presses send in WhatsApp.
@@ -137,23 +123,33 @@ There is no backend. The form (React Hook Form + Zod) collects the guest's name,
 
 The message is built in [`src/lib/whatsapp.ts`](src/lib/whatsapp.ts).
 
+## Music
+
+`music.youtubeId` plays a YouTube video's sound in the background. Browsers only allow sound after a tap, so the music starts when the guest taps the wax seal, fading in. A floating button lets them pause or resume it. "Skip intro" does not start music.
+
+- It uses YouTube's embedded player, loaded from `youtube-nocookie.com` a moment after the page opens. YouTube's embed policy expects its player to be visible; this one is hidden, which YouTube could object to or block.
+- iPhone/Safari may refuse to start a YouTube player from a tap outside it. In that case the button simply shows "Play music". An MP3 you have the rights to would be more reliable; ask for the file-based player.
+
 ## Project structure
 
 ```
 src/
-  app/                 layout, page, metadata routes (icon, OG image, robots, sitemap), 404, error
-  config/wedding.ts    ← all wedding content
+  app/                 page (plain link), i/[code] (invite links), admin/[key], metadata routes, 404, error
+  config/wedding.ts    ← wording, couple, dates, music, contact
+  config/events.ts     ← events (server-only) + what the plain link shows
   types/               config types
   sections/            Hero, Blessing (verse + families), Celebrations, Countdown, SaveTheDate, Rsvp, Closing
   components/
     invitation/        InvitationGate (cover, seal, curtain reveal)
-    layout/            ExperienceProvider (cover state), SiteNav, MainContent
-    animations/        Reveal, SplitText, PetalField (canvas), SakuraBurst
-    art/               CrimsonMoon, WaxSeal, Ornament/SectionHeading, Illustration
+    layout/            InvitationPage, InviteProvider, ExperienceProvider, SiteNav, MainContent
+    admin/             InviteBuilder (tick events → link)
+    music/             MusicProvider (YouTube player), MusicToggle
+    animations/        Reveal, ScriptName (ink reveal), PetalField, SakuraBurst
+    art/               CrimsonMoon, WaxSeal, Bismillah, Ornament/SectionHeading, Illustration
     events/            EventComposition
     rsvp/              RsvpForm, Zod schema
   hooks/               countdown, active section, scroll lock
-  lib/                 timezone maths, calendar (.ics / Google), maps, WhatsApp message, OG assets
+  lib/                 invites (server), timezone maths, calendar, maps, WhatsApp messages, OG card/icons
 scripts/generate-art.mjs
 public/illustrations
 ```
@@ -161,7 +157,7 @@ public/illustrations
 ## Design system
 
 - **Palette** (Tailwind tokens in `globals.css`): `obsidian #090708`, `burgundy #400D20`, `wine #5C1029`, `crimson #741D35`, `gold #D5B98A`, `ivory #F1E7D9`, `rose #A77B82`
-- **Type:** Cormorant Garamond for display (italic names, lining numerals), Playfair Display for dates and venue names, Inter for UI and body text, Amiri for the Arabic Bismillah. All are self-hosted through `next/font`.
+- **Type:** Pinyon Script (calligraphy) for the couple's names, Cormorant Garamond for display text, Playfair Display for dates and venue names, Inter for UI and body text, Amiri for the Arabic Bismillah. All are self-hosted through `next/font`; Pinyon and Cormorant are also embedded in `src/assets/fonts` for the share image.
 - **Shared components:** `.eyebrow`, `.display-title`, `.btn-luxe`, `.link-luxe`, `.frame`, `.field-input`, plus `ease-silk` / `ease-curtain` easings.
 - **Motion:** Motion for React throughout. GSAP was not needed. Entrances play once, the cover runs a staged timeline, and parallax runs on transforms only. Petals are a single `<canvas>` (fewer petals on phones, paused in background tabs).
 

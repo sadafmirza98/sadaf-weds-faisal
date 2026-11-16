@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { wedding } from "@/config/wedding";
-import { joinNames, type Invite } from "@/lib/invites";
+import type { Invite } from "@/types/wedding";
 import { formatFullDate, formatLongDate } from "@/lib/time";
-import { coupleNames } from "@/lib/utils";
+import { coupleNames, joinNames } from "@/lib/utils";
 
 /** "Nikah, Reception and Walima" for this guest. */
 export function inviteEventList(invite: Invite) {

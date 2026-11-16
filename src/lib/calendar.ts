@@ -38,8 +38,8 @@ export function googleCalendarUrl(event: WeddingEvent, timeZone: string, title: 
     action: "TEMPLATE",
     text: `${title} — ${event.name}`,
     dates: `${start}/${end}`,
-    details: `${details(event)}\n\nDirections: ${mapsUrl(event.venue)}`,
-    location: `${event.venue.name}, ${event.venue.address}`,
+    details: event.venue ? `${details(event)}\n\nDirections: ${mapsUrl(event.venue)}` : details(event),
+    location: event.venue ? `${event.venue.name}, ${event.venue.address}` : "",
     ctz: timeZone,
   });
   return `https://calendar.google.com/calendar/render?${params.toString()}`;
@@ -61,8 +61,7 @@ export function buildIcs(event: WeddingEvent, timeZone: string, title: string) {
     span.allDay ? `DTEND;VALUE=DATE:${span.end}` : `DTEND:${span.end}`,
     `SUMMARY:${escapeIcs(`${title} — ${event.name}`)}`,
     `DESCRIPTION:${escapeIcs(details(event))}`,
-    `LOCATION:${escapeIcs(`${event.venue.name}, ${event.venue.address}`)}`,
-    `URL:${mapsUrl(event.venue)}`,
+    ...(event.venue ? [`LOCATION:${escapeIcs(`${event.venue.name}, ${event.venue.address}`)}`, `URL:${mapsUrl(event.venue)}`] : []),
     "END:VEVENT",
     "END:VCALENDAR",
   ];

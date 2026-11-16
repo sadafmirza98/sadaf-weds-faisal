@@ -88,8 +88,14 @@ export function EventComposition({ event, index }: { event: WeddingEvent; index:
               <MapPin className="size-3.5" aria-hidden="true" /> Venue
             </dt>
             <dd>
-              <p className="font-serif text-lg text-ivory">{event.venue.name}</p>
-              <p className="mt-1 text-sm leading-relaxed text-ivory/60">{event.venue.address}</p>
+              {event.venue ? (
+                <>
+                  <p className="font-serif text-lg text-ivory">{event.venue.name}</p>
+                  <p className="mt-1 text-sm leading-relaxed text-ivory/60">{event.venue.address}</p>
+                </>
+              ) : (
+                <p className="font-display text-lg italic text-ivory/70">{wedding.celebrations.venueToBeAnnounced}</p>
+              )}
             </dd>
           </div>
           {event.dressCode && (
@@ -117,11 +123,13 @@ export function EventComposition({ event, index }: { event: WeddingEvent; index:
         </dl>
 
         <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-2">
-          <a href={mapsUrl(event.venue)} target="_blank" rel="noopener noreferrer" className="link-luxe">
-            <MapPin className="size-3.5" aria-hidden="true" />
-            Get directions
-            <span className="sr-only"> to {event.venue.name} (opens Google Maps in a new tab)</span>
-          </a>
+          {event.venue && (
+            <a href={mapsUrl(event.venue)} target="_blank" rel="noopener noreferrer" className="link-luxe">
+              <MapPin className="size-3.5" aria-hidden="true" />
+              Get directions
+              <span className="sr-only"> to {event.venue.name} (opens Google Maps in a new tab)</span>
+            </a>
+          )}
           <a
             href={googleCalendarUrl(event, wedding.timeZone, coupleNames)}
             target="_blank"

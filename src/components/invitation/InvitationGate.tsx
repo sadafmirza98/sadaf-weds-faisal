@@ -4,9 +4,10 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useRef } from "react";
 import { wedding } from "@/config/wedding";
 import { useExperience } from "@/components/layout/ExperienceProvider";
+import { useMusic } from "@/components/music/MusicProvider";
 import { useInvite } from "@/components/layout/InviteProvider";
 import { inviteMessage } from "@/lib/invite-copy";
-import { SplitText } from "@/components/animations/SplitText";
+import { ScriptName } from "@/components/animations/ScriptName";
 import { CrimsonMoon } from "@/components/art/CrimsonMoon";
 import { Illustration } from "@/components/art/Illustration";
 import { Bismillah } from "@/components/art/Bismillah";
@@ -35,6 +36,7 @@ export function InvitationGate() {
   const dialogRef = useRef<HTMLDivElement>(null);
   const { couple, invitation } = wedding;
   const invite = useInvite();
+  const music = useMusic();
 
   // Reduced motion: no curtain choreography — open straight away.
   useEffect(() => {
@@ -159,9 +161,9 @@ export function InvitationGate() {
 
                   <h2
                     id="gate-title"
-                    className="display-title mt-[clamp(0.5rem,2.2svh,1.5rem)] flex flex-col items-center text-[clamp(2.6rem,min(13vw,7.6svh),4.6rem)] italic short:mt-1 short:flex-row short:items-baseline short:gap-[0.25em] short:text-[clamp(2.2rem,12svh,3.2rem)]"
+                    className="display-title mt-[clamp(0.5rem,2.2svh,1.5rem)] flex flex-col items-center text-[clamp(3rem,min(15vw,8.8svh),5.4rem)] leading-[1.05] short:mt-1 short:flex-row short:items-baseline short:gap-[0.25em] short:text-[clamp(2.5rem,13svh,3.6rem)]"
                   >
-                    <SplitText text={couple.partnerOne.firstName} delay={0.85} />
+                    <ScriptName text={couple.partnerOne.firstName} delay={0.85} />
                     <motion.span
                       className="gold-text my-[0.05em] font-display text-[0.42em] not-italic"
                       initial={{ opacity: 0, scale: 0.6 }}
@@ -170,7 +172,7 @@ export function InvitationGate() {
                     >
                       &amp;
                     </motion.span>
-                    <SplitText text={couple.partnerTwo.firstName} delay={1.2} />
+                    <ScriptName text={couple.partnerTwo.firstName} delay={1.35} />
                   </h2>
 
                   <motion.div {...enter(1.5, 10)} className="mt-[clamp(0.75rem,2.2svh,1.25rem)] flex flex-col items-center gap-3">
@@ -192,7 +194,10 @@ export function InvitationGate() {
                 {/* Wax seal — the primary action */}
                 <motion.button
                   type="button"
-                  onClick={beginOpening}
+                  onClick={() => {
+                    music.play(); // the tap is the user gesture browsers require for sound
+                    beginOpening();
+                  }}
                   disabled={opening}
                   className="group relative flex flex-col items-center gap-3 rounded-full outline-offset-8"
                   initial={{ opacity: 0, scale: 0.6, y: 12 }}

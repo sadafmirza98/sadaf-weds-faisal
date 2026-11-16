@@ -11,8 +11,6 @@ export const rsvpSchema = z
       .min(2, "Please enter your full name.")
       .max(80, "Please keep your name under 80 characters."),
     attending: z.enum(["yes", "no"], { error: "Please let us know whether you can join us." }),
-    /** Ids of the celebrations the guest will attend (only meaningful when attending). */
-    events: z.array(z.string()),
     attendees: z
       .number({ error: "Please choose how many will attend." })
       .int()
@@ -23,10 +21,6 @@ export const rsvpSchema = z
   .refine((d) => d.attending !== "yes" || d.attendees >= 1, {
     path: ["attendees"],
     error: "Please choose how many will attend.",
-  })
-  .refine((d) => d.attending !== "yes" || d.events.length > 0, {
-    path: ["events"],
-    error: "Please choose at least one celebration.",
   });
 
 export type RsvpFormInput = z.input<typeof rsvpSchema>;

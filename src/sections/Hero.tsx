@@ -6,16 +6,16 @@ import { ArrowDown } from "lucide-react";
 import { wedding } from "@/config/wedding";
 import { useExperience } from "@/components/layout/ExperienceProvider";
 import { useInvite } from "@/components/layout/InviteProvider";
-import { joinNames } from "@/lib/invites";
-import { SplitText } from "@/components/animations/SplitText";
+import { ScriptName } from "@/components/animations/ScriptName";
 import { CrimsonMoon } from "@/components/art/CrimsonMoon";
 import { Bismillah } from "@/components/art/Bismillah";
 import { Illustration } from "@/components/art/Illustration";
 import { formatLongDate, weekdayOf } from "@/lib/time";
+import { joinNames } from "@/lib/utils";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-/** SECTION B — dramatic hero with a parallax crimson moon. */
+/** SECTION B — dramatic hero with a parallax moon. */
 export function Hero() {
   const { revealed } = useExperience();
   const ref = useRef<HTMLElement>(null);
@@ -69,7 +69,7 @@ export function Hero() {
           ref={moonScope}
           type="button"
           onClick={onMoon}
-          aria-label="The crimson moon"
+          aria-label="The moon"
           className="relative block w-full cursor-pointer rounded-full transition-[filter] duration-700 ease-silk hover:brightness-110"
         >
           <CrimsonMoon idPrefix="hero-moon" />
@@ -118,9 +118,9 @@ export function Hero() {
             {joinNames(events.map((e) => e.name), " & ")}
           </motion.p>
 
-          <h1 id="hero-title" className="display-title mt-5 text-[clamp(3.6rem,15vw,10.5rem)] short:text-[clamp(3rem,20svh,5.5rem)] italic leading-[0.86] [text-shadow:0_4px_40px_rgba(9,7,8,0.65)]">
+          <h1 id="hero-title" className="display-title mt-5 text-[clamp(4.2rem,17vw,12rem)] short:text-[clamp(3.4rem,22svh,6.2rem)] leading-[1] [text-shadow:0_4px_40px_rgba(9,7,8,0.65)]">
             <span className="block">
-              <SplitText text={couple.partnerOne.firstName} play={revealed} delay={base + 0.25} stagger={0.06} />
+              <ScriptName text={couple.partnerOne.firstName} play={revealed} delay={base + 0.25} />
             </span>
             <span className="flex items-baseline justify-center gap-[0.18em] short:justify-start short:pl-[0.9em] lg:justify-start lg:pl-[0.9em]">
               <motion.span
@@ -131,7 +131,7 @@ export function Hero() {
               >
                 &amp;
               </motion.span>
-              <SplitText text={couple.partnerTwo.firstName} play={revealed} delay={base + 0.6} stagger={0.06} />
+              <ScriptName text={couple.partnerTwo.firstName} play={revealed} delay={base + 0.75} />
             </span>
           </h1>
 
