@@ -61,7 +61,7 @@ export function Closing() {
           <p className="mt-10 font-display text-lg italic text-ivory/55">{closing.signOff}</p>
         </Reveal>
 
-        <h2 id="closing-title" className="display-title mt-6 text-[clamp(4rem,15vw,10rem)] leading-[1.05]">
+        <h2 id="closing-title" className="display-title mt-6 text-[clamp(3.3rem,13vw,10rem)] leading-[1.05]">
           <ScriptName text={couple.partnerOne.firstName} inView />
           <span className="gold-text mx-[0.15em] text-[0.5em] not-italic">&amp;</span>
           <ScriptName text={couple.partnerTwo.firstName} inView delay={0.5} />

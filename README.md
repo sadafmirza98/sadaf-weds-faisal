@@ -157,7 +157,7 @@ public/illustrations
 ## Design system
 
 - **Palette** (Tailwind tokens in `globals.css`): `obsidian #090708`, `burgundy #400D20`, `wine #5C1029`, `crimson #741D35`, `gold #D5B98A`, `ivory #F1E7D9`, `rose #A77B82`
-- **Type:** Pinyon Script (calligraphy) for the couple's names, Cormorant Garamond for display text, Playfair Display for dates and venue names, Inter for UI and body text, Amiri for the Arabic Bismillah. All are self-hosted through `next/font`; Pinyon and Cormorant are also embedded in `src/assets/fonts` for the share image.
+- **Type:** Monsieur La Doulaise (royal copperplate calligraphy) for the couple's names, Cormorant Garamond for display text, Playfair Display for dates and venue names, Inter for UI and body text, Amiri for the Arabic Bismillah. All are self-hosted through `next/font`; the script and Cormorant are also embedded in `src/assets/fonts` for the share image.
 - **Shared components:** `.eyebrow`, `.display-title`, `.btn-luxe`, `.link-luxe`, `.frame`, `.field-input`, plus `ease-silk` / `ease-curtain` easings.
 - **Motion:** Motion for React throughout. GSAP was not needed. Entrances play once, the cover runs a staged timeline, and parallax runs on transforms only. Petals are a single `<canvas>` (fewer petals on phones, paused in background tabs).
 

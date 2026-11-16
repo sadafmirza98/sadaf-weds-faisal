@@ -7,14 +7,14 @@ export async function loadOgAssets() {
   const [italic, medium, script, floral] = await Promise.all([
     readFile(join(root, "src/assets/fonts/CormorantGaramond-Italic.ttf")),
     readFile(join(root, "src/assets/fonts/CormorantGaramond-Medium.ttf")),
-    readFile(join(root, "src/assets/fonts/PinyonScript-Regular.ttf")),
+    readFile(join(root, "src/assets/fonts/MonsieurLaDoulaise-Regular.ttf")),
     readFile(join(root, "public/illustrations/floral-corner.svg"), "utf8"),
   ]);
   return {
     fonts: [
       { name: "Cormorant", data: italic, style: "italic" as const, weight: 400 as const },
       { name: "Cormorant", data: medium, style: "normal" as const, weight: 500 as const },
-      { name: "Pinyon", data: script, style: "normal" as const, weight: 400 as const },
+      { name: "RoyalScript", data: script, style: "normal" as const, weight: 400 as const },
     ],
     floralDataUri: `data:image/svg+xml;base64,${Buffer.from(floral).toString("base64")}`,
   };

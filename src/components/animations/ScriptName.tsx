@@ -14,7 +14,7 @@ interface ScriptNameProps {
 }
 
 /**
- * A name in the calligraphy face, revealed left to right like ink from a pen.
+ * A name in the royal calligraphy face, revealed left to right like ink from a pen.
  * The whole word is one span, so the script's joins and swashes stay intact;
  * padding (offset by negative margin) keeps flourishes inside the clip.
  */
@@ -31,7 +31,7 @@ export function ScriptName({ text, className, play = true, inView = false, delay
       {...(inView ? { whileInView: "show", viewport: { once: true, amount: 0.3 } } : { animate: play ? "show" : "hidden" })}
     >
       <motion.span
-        className={cn("-mx-[0.35em] -my-[0.3em] inline-block px-[0.35em] py-[0.3em] font-script font-normal not-italic", className)}
+        className={cn("-mx-[0.6em] -my-[0.5em] inline-block px-[0.6em] py-[0.5em] font-script font-normal not-italic", className)}
         variants={ink}
       >
         {text}

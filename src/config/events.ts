@@ -17,7 +17,8 @@ const banquet: Venue = {
   name: "The Grand FM Banquet",
   address:
     "Dilshad Banquet, 1st Floor, E.E. Heights, above Jaffer Bhai's Delhi Darbar Restaurant, Jogeshwari West, Mumbai 400102",
-  mapsUrl: "https://maps.app.goo.gl/AbPtDVY8sa2EQvLb8",
+  mapsUrl:
+    "http://google.com/maps/place/The+Grand+FM+Banquet/@19.1374952,72.8458317,17z/data=!3m1!4b1!4m6!3m5!1s0x3be7b631b5978847:0x9570c62616af2660!8m2!3d19.1374952!4d72.8458317!16s%2Fg%2F11cp7fdv_p?entry=ttu&g_ep=EgoyMDI2MTExMC4wIKXMDSoASAFQAw%3D%3D",
 };
 
 export const events: WeddingEvent[] = [
@@ -27,7 +28,8 @@ export const events: WeddingEvent[] = [
     name: "Haldi",
     start: "2026-12-17T15:00", // ✎ confirm time ("probably 3 pm")
     // venue: { name: "…", address: "…", mapsUrl: "…" },  ✎ add when known
-    description: "An afternoon of turmeric, laughter and blessings with our families before the wedding.",
+    description:
+      "An afternoon of turmeric, laughter and blessings with our families before the wedding.",
   },
   {
     id: "mehndi",
@@ -35,7 +37,8 @@ export const events: WeddingEvent[] = [
     name: "Mehndi",
     start: "2026-12-17T15:00", // ✎ confirm time ("probably 3 pm")
     // venue: { … },  ✎ add when known
-    description: "Henna, laughter and celebration with our families and friends.",
+    description:
+      "Henna, laughter and celebration with our families and friends.",
   },
   {
     id: "nikah",
@@ -54,8 +57,15 @@ export const events: WeddingEvent[] = [
     start: "2026-12-19T20:00",
     end: "2026-12-19T23:00",
     venue: banquet,
-    description: "An evening of celebration with our families and friends, ending with the Bidai.",
-    schedule: [{ time: "2026-12-19T23:00", title: "Bidai", note: "The bride's farewell" }],
+    description:
+      "An evening of celebration with our families and friends, ending with the Bidai.",
+    schedule: [
+      {
+        time: "2026-12-19T23:00",
+        title: "Bidai",
+        note: "The bride's farewell",
+      },
+    ],
   },
   {
     id: "walima",
@@ -63,7 +73,8 @@ export const events: WeddingEvent[] = [
     name: "Walima",
     start: "2026-12-20T19:00",
     venue: banquet,
-    description: "Join us for our Walima, the wedding feast, as we celebrate our first day as husband and wife.",
+    description:
+      "Join us for our Walima, the wedding feast, as we celebrate our first day as husband and wife.",
   },
 ];
 

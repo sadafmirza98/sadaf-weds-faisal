@@ -63,9 +63,9 @@ export function renderInviteCard(invite: Invite) {
             {wedding.invitation.eyebrow}
           </div>
           <div style={{ display: "flex", alignItems: "baseline", fontSize: 148, marginTop: 10, lineHeight: 1.15 }}>
-            <span style={{ fontFamily: "Pinyon" }}>{couple.partnerOne.firstName}</span>
+            <span style={{ fontFamily: "RoyalScript" }}>{couple.partnerOne.firstName}</span>
             <span style={{ fontSize: 80, fontStyle: "italic", color: "#D5B98A", margin: "0 26px" }}>&amp;</span>
-            <span style={{ fontFamily: "Pinyon" }}>{couple.partnerTwo.firstName}</span>
+            <span style={{ fontFamily: "RoyalScript" }}>{couple.partnerTwo.firstName}</span>
           </div>
           <div style={{ fontSize: 22, letterSpacing: 8, marginTop: 22, fontStyle: "normal", fontWeight: 500, textTransform: "uppercase", color: "#D5B98A" }}>
             {invite.events.map((e) => e.name).join("  ·  ")}

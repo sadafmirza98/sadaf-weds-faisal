@@ -17,12 +17,18 @@ export const wedding: WeddingConfig = {
     partnerOne: {
       firstName: "Sadaf",
       fullName: "Sadaf Mirza",
-      family: { relation: "Daughter of", parents: "Mrs. Mehrunnisa Mirza & Mr. Zaheer Mirza" },
+      family: {
+        relation: "Daughter of",
+        parents: "Mrs. Mehrunnisa Mirza & Mr. Zaheer Mirza",
+      },
     },
     partnerTwo: {
       firstName: "Faisal",
       fullName: "Faisal Khan",
-      family: { relation: "Son of", parents: "Mrs. Fatima Khan & Mr. Mohd Afzal Khan" },
+      family: {
+        relation: "Son of",
+        parents: "Mrs. Fatima Khan & Mr. Mohd Afzal Khan",
+      },
     },
     monogram: ["S", "F"],
   },
@@ -40,7 +46,8 @@ export const wedding: WeddingConfig = {
     },
     eyebrow: "Together with their families",
     // {events} becomes the guest's invited events, e.g. "Nikah, Reception and Walima".
-    message: "request the honour of your presence at their {events}, as they begin their life together.",
+    message:
+      "request the honour of your presence at their {events}, as they begin their life together.",
     openLabel: "Open the invitation",
   },
 
@@ -81,7 +88,8 @@ export const wedding: WeddingConfig = {
   rsvp: {
     eyebrow: "Kindly Reply",
     title: "Will you join us?",
-    intro: "Fill in your reply and send it to us on WhatsApp in one tap, so we can prepare a place for you.",
+    intro:
+      "Fill in your reply and send it to us on WhatsApp in one tap, so we can prepare a place for you.",
     enabled: true,
     // deadline: "2026-12-12T23:59",  ✎ optional — the form closes after this moment
     maxAttendees: 4, // ✎ confirm — guests per reply, including the guest
@@ -118,7 +126,7 @@ export const wedding: WeddingConfig = {
     secretLetter: {
       salutation: "To whoever found this,",
       body: "You must be the curious kind. We like that. Keep us in your duas.",
-      signature: "S & F",
+      signature: "SaFal",
     },
   },
 
@@ -129,7 +137,8 @@ export const wedding: WeddingConfig = {
     // Fallback title; each invite link gets "Sadaf & Faisal — <its main date>".
     title: "Sadaf & Faisal — Wedding Invitation",
     // Fallback only — each page describes the guest's own events.
-    description: "You are invited to the wedding celebrations of Sadaf & Faisal in Mumbai. Open the invitation to RSVP.",
+    description:
+      "You are invited to the wedding celebrations of Sadaf & Faisal in Mumbai. Open the invitation to RSVP.",
     ogImageAlt: "Sadaf & Faisal wedding invitation",
     allowIndexing: false, // private invitation by default
   },
