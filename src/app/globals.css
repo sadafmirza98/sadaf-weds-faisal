@@ -1,26 +1,337 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Phones held sideways: too short for the stacked invitation layout. */
+@custom-variant short {
+  @media (max-height: 520px) and (orientation: landscape) {
+    @slot;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ─────────────────────────────────────────────────────────────────────────
+   DESIGN SYSTEM
+   Colour, type and motion tokens. Components use these via Tailwind
+   utilities (bg-obsidian, text-gold, font-display, ease-silk …).
+   ───────────────────────────────────────────────────────────────────────── */
+@theme {
+  /* Palette */
+  --color-obsidian: #090708;
+  --color-night: #0f0b0d;
+  --color-burgundy: #400d20;
+  --color-wine: #5c1029;
+  --color-crimson: #741d35;
+  --color-gold: #d5b98a;
+  --color-gold-soft: #b89c6e;
+  --color-ivory: #f1e7d9;
+  --color-rose: #a77b82;
+  --color-ember: #b8455a;
+
+  /* Type */
+  --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  --font-serif: var(--font-playfair), "Playfair Display", Georgia, serif;
+  --font-sans: var(--font-inter), Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-arabic: var(--font-amiri), "Amiri", "Geeza Pro", "Noto Naskh Arabic", serif;
+
+  /* Motion */
+  --ease-silk: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-curtain: cubic-bezier(0.76, 0, 0.24, 1);
+
+  --animate-twinkle: twinkle 5s ease-in-out infinite;
+  --animate-breathe: breathe 7s ease-in-out infinite;
+  --animate-drift: drift 14s ease-in-out infinite;
+  --animate-shimmer: shimmer 2.2s linear infinite;
+  --animate-scroll-cue: scroll-cue 2.4s var(--ease-silk) infinite;
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 1; }
+  }
+  @keyframes breathe {
+    0%, 100% { transform: scale(1); opacity: 0.85; }
+    50% { transform: scale(1.06); opacity: 1; }
+  }
+  @keyframes drift {
+    0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+    50% { transform: translate3d(0, -10px, 0) rotate(1.5deg); }
+  }
+  @keyframes shimmer {
+    from { background-position: -200% 0; }
+    to { background-position: 200% 0; }
+  }
+  @keyframes scroll-cue {
+    0% { transform: scaleY(0); transform-origin: top; }
+    45% { transform: scaleY(1); transform-origin: top; }
+    55% { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+}
+
+/* ── Base ───────────────────────────────────────────────────────────────── */
+@layer base {
+  :root {
+    color-scheme: dark;
+    --gutter: clamp(1.25rem, 5vw, 4rem);
+    --section-y: clamp(4.5rem, 12vw, 11rem);
+  }
+
+  html {
+    background: var(--color-obsidian);
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background: var(--color-obsidian);
+    color: var(--color-ivory);
+    font-family: var(--font-sans);
+    font-feature-settings: "kern", "liga";
+    font-variant-numeric: lining-nums;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background: var(--color-crimson);
+    color: var(--color-ivory);
+  }
+
+  /* Skip the invitation cover before hydration for returning guests / deep links. */
+  html[data-opened] .gate {
+    display: none;
+  }
+
+  section[id] {
+    scroll-margin-top: 4.5rem;
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--color-gold);
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* ── Components ─────────────────────────────────────────────────────────── */
+@layer components {
+  .shell {
+    width: 100%;
+    max-width: 82rem;
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  .section-y {
+    padding-block: var(--section-y);
+  }
+
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.38em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+  }
+
+  .display-title {
+    font-family: var(--font-display);
+    font-weight: 300;
+    line-height: 0.98;
+    letter-spacing: -0.01em;
+    color: var(--color-ivory);
+  }
+
+  .body-copy {
+    font-size: 0.975rem;
+    line-height: 1.85;
+    color: color-mix(in oklab, var(--color-ivory) 72%, transparent);
+  }
+
+  .hairline {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--color-gold) 55%, transparent), transparent);
+  }
+
+  .text-outline {
+    color: transparent;
+    -webkit-text-stroke: 1px color-mix(in oklab, var(--color-gold) 45%, transparent);
+  }
+
+  .gold-text {
+    background: linear-gradient(100deg, #b89c6e 0%, #f3e3c3 45%, #d5b98a 60%, #9f8358 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Luxe button: thin gold frame with a sweeping sheen on hover. */
+  .btn-luxe {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 3rem;
+    padding: 0.85rem 2rem;
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--color-ivory);
+    border: 1px solid color-mix(in oklab, var(--color-gold) 55%, transparent);
+    background: linear-gradient(180deg, color-mix(in oklab, var(--color-wine) 55%, transparent), color-mix(in oklab, var(--color-burgundy) 70%, transparent));
+    overflow: hidden;
+    isolation: isolate;
+    transition: border-color 0.5s var(--ease-silk), color 0.5s var(--ease-silk), box-shadow 0.5s var(--ease-silk);
+  }
+  .btn-luxe::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(110deg, transparent 30%, rgb(241 231 217 / 0.14) 50%, transparent 70%);
+    transform: translateX(-120%);
+    transition: transform 0.9s var(--ease-silk);
+  }
+  .btn-luxe:hover {
+    border-color: var(--color-gold);
+    box-shadow: 0 0 40px -10px rgb(184 69 90 / 0.55);
+  }
+  .btn-luxe:hover::before {
+    transform: translateX(120%);
+  }
+  .btn-luxe:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  .link-luxe {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+    padding-block: 0.5rem;
+    transition: color 0.4s var(--ease-silk);
+  }
+  .link-luxe::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.2rem;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0.25);
+    transform-origin: left;
+    opacity: 0.6;
+    transition: transform 0.6s var(--ease-silk), opacity 0.6s var(--ease-silk);
+  }
+  .link-luxe:hover {
+    color: var(--color-ivory);
+  }
+  .link-luxe:hover::after {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+
+  /* Framed panel with corner ornaments (used by RSVP & secret letter). */
+  .frame {
+    position: relative;
+    border: 1px solid color-mix(in oklab, var(--color-gold) 28%, transparent);
+    background:
+      radial-gradient(120% 80% at 50% 0%, rgb(92 16 41 / 0.28), transparent 60%),
+      linear-gradient(180deg, rgb(15 11 13 / 0.9), rgb(9 7 8 / 0.92));
+  }
+  .frame::before {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    border: 1px solid color-mix(in oklab, var(--color-gold) 12%, transparent);
+    pointer-events: none;
+  }
+
+  .field-input {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid color-mix(in oklab, var(--color-ivory) 22%, transparent);
+    padding: 0.7rem 0 0.75rem;
+    font-size: 1rem;
+    color: var(--color-ivory);
+    border-radius: 0;
+    transition: border-color 0.4s var(--ease-silk);
+  }
+  .field-input::placeholder {
+    color: color-mix(in oklab, var(--color-ivory) 32%, transparent);
+  }
+  .field-input:focus {
+    outline: none;
+    border-bottom-color: var(--color-gold);
+  }
+  .field-input[aria-invalid="true"] {
+    border-bottom-color: #d06a7e;
+  }
+
+  .skeleton {
+    background: linear-gradient(90deg, rgb(64 13 32 / 0.25) 0%, rgb(116 29 53 / 0.35) 50%, rgb(64 13 32 / 0.25) 100%);
+    background-size: 200% 100%;
+    animation: var(--animate-shimmer);
+  }
+
+  /* Film grain over the whole page (single fixed layer, GPU-cheap). */
+  .grain {
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    opacity: 0.07;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+
+  /* Cheap layered starfield using radial gradients. */
+  .starfield {
+    background-image:
+      radial-gradient(1px 1px at 12% 18%, rgb(241 231 217 / 0.8), transparent 60%),
+      radial-gradient(1px 1px at 28% 72%, rgb(241 231 217 / 0.55), transparent 60%),
+      radial-gradient(1.5px 1.5px at 41% 33%, rgb(213 185 138 / 0.9), transparent 60%),
+      radial-gradient(1px 1px at 57% 12%, rgb(241 231 217 / 0.6), transparent 60%),
+      radial-gradient(1px 1px at 66% 58%, rgb(241 231 217 / 0.5), transparent 60%),
+      radial-gradient(1.5px 1.5px at 78% 26%, rgb(241 231 217 / 0.85), transparent 60%),
+      radial-gradient(1px 1px at 86% 81%, rgb(213 185 138 / 0.7), transparent 60%),
+      radial-gradient(1px 1px at 93% 44%, rgb(241 231 217 / 0.6), transparent 60%),
+      radial-gradient(1px 1px at 7% 52%, rgb(241 231 217 / 0.5), transparent 60%),
+      radial-gradient(1px 1px at 49% 89%, rgb(241 231 217 / 0.45), transparent 60%);
+    background-size: 380px 380px;
+  }
+  .starfield-alt {
+    background-image:
+      radial-gradient(1px 1px at 22% 38%, rgb(241 231 217 / 0.7), transparent 60%),
+      radial-gradient(1px 1px at 37% 8%, rgb(213 185 138 / 0.8), transparent 60%),
+      radial-gradient(1.5px 1.5px at 63% 77%, rgb(241 231 217 / 0.8), transparent 60%),
+      radial-gradient(1px 1px at 71% 39%, rgb(241 231 217 / 0.6), transparent 60%),
+      radial-gradient(1px 1px at 91% 12%, rgb(241 231 217 / 0.7), transparent 60%),
+      radial-gradient(1px 1px at 4% 91%, rgb(213 185 138 / 0.6), transparent 60%);
+    background-size: 520px 520px;
+  }
 }
