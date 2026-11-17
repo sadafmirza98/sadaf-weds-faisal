@@ -178,7 +178,7 @@ export function Hero() {
 
       {/* Scroll cue */}
       <motion.a
-        href="#blessing"
+        href="#families"
         aria-label="Scroll down"
         className="absolute bottom-6 left-1/2 flex -translate-x-1/2 flex-col items-center gap-3 text-[0.6rem] uppercase tracking-[0.4em] text-ivory/50 transition-colors hover:text-gold"
         initial={{ opacity: 0 }}

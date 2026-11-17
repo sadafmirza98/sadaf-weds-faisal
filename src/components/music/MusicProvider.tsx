@@ -67,6 +67,7 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
   const wantRef = useRef(false);
   const resumeRef = useRef(false);
   const fadeRef = useRef<number | null>(null);
+  const playingRef = useRef(false);
   const [available, setAvailable] = useState(Boolean(music));
   const [playing, setPlaying] = useState(false);
 
@@ -85,7 +86,7 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
   }, [music]);
 
   const start = useCallback(() => {
-    if (!playerRef.current || !readyRef.current) return;
+    if (!playerRef.current || !readyRef.current || playingRef.current) return; // already playing: no re-fade
     fadeIn();
     playerRef.current.playVideo();
   }, [fadeIn]);
@@ -119,8 +120,10 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
               if (wantRef.current) start();
             },
             onStateChange: (e: YTPlayerEvent) => {
-              if (e.data === PLAYING) setPlaying(true);
-              else if (e.data === PAUSED || e.data === ENDED) setPlaying(false);
+              const now = e.data === PLAYING ? true : e.data === PAUSED || e.data === ENDED ? false : null;
+              if (now === null) return;
+              playingRef.current = now;
+              setPlaying(now);
             },
             onError: () => setAvailable(false),
           },
@@ -174,6 +177,7 @@ export function MusicProvider({ children }: { children: React.ReactNode }) {
     resumeRef.current = false;
     safeStorage.set("session", PREF_KEY, "off");
     playerRef.current?.pauseVideo();
+    playingRef.current = false;
     setPlaying(false);
   }, []);
 

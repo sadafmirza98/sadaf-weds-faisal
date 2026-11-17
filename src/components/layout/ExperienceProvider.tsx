@@ -20,6 +20,8 @@ interface ExperienceState {
   beginOpening: () => void;
   finishOpening: () => void;
   skipToSite: () => void;
+  /** Brings the invitation cover back (the S&F logo). */
+  returnToGate: () => void;
 }
 
 const ExperienceContext = createContext<ExperienceState | null>(null);
@@ -65,9 +67,18 @@ export function ExperienceProvider({ children }: { children: React.ReactNode }) 
     setPhase("open");
   }, []);
 
+  const returnToGate = useCallback(() => {
+    safeStorage.set("session", OPENED_KEY, "0");
+    // The head script in layout.tsx hides the cover for returning guests; undo that.
+    document.documentElement.removeAttribute("data-opened");
+    if (window.location.hash) history.replaceState(null, "", window.location.pathname + window.location.search);
+    window.scrollTo({ top: 0 });
+    setPhase("gate");
+  }, []);
+
   const value = useMemo<ExperienceState>(
-    () => ({ phase, revealed: phase !== "gate", beginOpening, finishOpening, skipToSite }),
-    [phase, beginOpening, finishOpening, skipToSite],
+    () => ({ phase, revealed: phase !== "gate", beginOpening, finishOpening, skipToSite, returnToGate }),
+    [phase, beginOpening, finishOpening, skipToSite, returnToGate],
   );
 
   return (

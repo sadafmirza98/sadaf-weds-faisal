@@ -43,10 +43,11 @@ export function InvitationGate() {
     if (opening && reduce) finishOpening();
   }, [opening, reduce, finishOpening]);
 
-  // Move focus into the dialog so keyboard and screen-reader users start here.
+  // Move focus into the dialog so keyboard and screen-reader users start here
+  // (on first load and when the S&F logo brings the cover back).
   useEffect(() => {
-    dialogRef.current?.focus({ preventScroll: true });
-  }, []);
+    if (phase === "gate") dialogRef.current?.focus({ preventScroll: true });
+  }, [phase]);
 
   const enter = (delay: number, y = 18) => ({
     initial: { opacity: 0, y },

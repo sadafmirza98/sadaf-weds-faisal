@@ -8,7 +8,7 @@ import { PetalField } from "@/components/animations/PetalField";
 import { MusicProvider } from "@/components/music/MusicProvider";
 import { MusicToggle } from "@/components/music/MusicToggle";
 import { Hero } from "@/sections/Hero";
-import { Blessing } from "@/sections/Blessing";
+import { Blessing, Families } from "@/sections/Blessing";
 import { Celebrations } from "@/sections/Celebrations";
 import { Countdown } from "@/sections/Countdown";
 import { SaveTheDate } from "@/sections/SaveTheDate";
@@ -32,11 +32,12 @@ export function InvitationPage({ invite }: { invite: Invite }) {
           <PetalField />
           <MainContent>
             <Hero />
-            <Blessing />
+            <Families />
             <Celebrations />
             <Countdown />
             <SaveTheDate />
             <Rsvp />
+            <Blessing />
             <Closing />
           </MainContent>
           <MusicToggle />

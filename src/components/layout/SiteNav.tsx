@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 export function SiteNav() {
-  const { phase } = useExperience();
+  const { phase, returnToGate } = useExperience();
   const { primary } = useInvite();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -72,7 +72,16 @@ export function SiteNav() {
         )}
       >
         <nav aria-label="Primary" className="shell flex h-16 items-center justify-between lg:h-[4.5rem]">
-          <a href="#top" className="group flex items-baseline gap-1 font-display text-2xl italic text-ivory" aria-label="Back to top">
+          <a
+            href="#top"
+            onClick={(e) => {
+              e.preventDefault();
+              setOpen(false);
+              returnToGate();
+            }}
+            className="group flex items-baseline gap-1 font-display text-2xl italic text-ivory"
+            aria-label="Back to the invitation cover"
+          >
             <span>{m1}</span>
             <span className="gold-text text-base not-italic">&amp;</span>
             <span>{m2}</span>
