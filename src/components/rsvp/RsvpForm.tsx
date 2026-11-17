@@ -11,6 +11,7 @@ import { WaxSeal } from "@/components/art/WaxSeal";
 import { rsvpSchema, type RsvpFormInput, type RsvpFormValues } from "@/components/rsvp/schema";
 import { formatLongDate, zonedTimeToUtc } from "@/lib/time";
 import { rsvpMessage, whatsappUrl } from "@/lib/whatsapp";
+import { listedEvents } from "@/lib/invite-copy";
 import { cn } from "@/lib/utils";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -65,7 +66,7 @@ export function RsvpForm() {
 
   const onSubmit = (values: RsvpFormValues) => {
     setOpened(false);
-    setReady({ values, text: rsvpMessage(values, invite.events) });
+    setReady({ values, text: rsvpMessage(values, listedEvents(invite.events)) });
   };
 
   const edit = () => {

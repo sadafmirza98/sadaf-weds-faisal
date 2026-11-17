@@ -76,6 +76,12 @@ export interface WeddingEvent {
    * Reception. Shown on the event card and in the day-by-day itinerary.
    */
   schedule?: ScheduleItem[];
+  /**
+   * false = marked only on the Save the Date calendar; left out of the
+   * invitation wording, share preview and RSVP.
+   * Shown anyway when it is the guest's only event.
+   */
+  listed?: boolean;
 }
 
 /** What one guest's page shows. Built on the server; only these events reach the browser. */

@@ -4,6 +4,7 @@ import { wedding } from "@/config/wedding";
 import type { Invite } from "@/types/wedding";
 import { loadOgAssets, moonDataUri } from "@/lib/og";
 import { formatFullDate } from "@/lib/time";
+import { listedEvents } from "@/lib/invite-copy";
 
 export const ogSize = { width: 1200, height: 630 };
 
@@ -58,7 +59,7 @@ export function renderInviteCard(invite: Invite) {
             <span style={{ fontFamily: "RoyalScript" }}>{couple.partnerTwo.firstName}</span>
           </div>
           <div style={{ fontSize: 22, letterSpacing: 8, marginTop: 22, fontStyle: "normal", fontWeight: 500, textTransform: "uppercase", color: "#D5B98A" }}>
-            {invite.events.map((e) => e.name).join("  ·  ")}
+            {listedEvents(invite.events).map((e) => e.name).join("  ·  ")}
           </div>
           <div style={{ width: 260, height: 1, background: "linear-gradient(90deg, transparent, #D5B98A, transparent)", marginTop: 30 }} />
           <div style={{ fontSize: 30, letterSpacing: 8, marginTop: 26, fontStyle: "normal", fontWeight: 500, textTransform: "uppercase", color: "rgba(241,231,217,0.85)" }}>

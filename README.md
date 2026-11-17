@@ -110,6 +110,8 @@ Different guests can be invited to different events, for example Haldi and Nikah
 
 The guest's link shows only those events: the cover, hero, timeline, cards, calendar hearts, RSVP and link preview. **Other events' details are not in their page at all**, not even in the code, because pages are built on the server per invite. The same ticks always give the same link, and links cannot be guessed without `INVITE_SECRET`. Every guest's countdown runs to the Nikah (`weddingDate`).
 
+An event with `listed: false` in `src/config/events.ts` (currently the Walima) is only marked with a heart on the Save the Date calendar. It is left out of the cover, hero, share preview and RSVP wording, unless it is the guest's only event.
+
 The plain link (`/`) shows `defaultInviteEvents`. To add an event, add it to `src/config/events.ts`. Links for every combination are built automatically, and existing links keep working.
 
 ## RSVP: sent on WhatsApp

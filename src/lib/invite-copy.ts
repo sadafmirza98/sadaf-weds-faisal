@@ -1,12 +1,21 @@
 import type { Metadata } from "next";
 import { wedding } from "@/config/wedding";
-import type { Invite } from "@/types/wedding";
+import type { Invite, WeddingEvent } from "@/types/wedding";
 import { formatFullDate, formatLongDate } from "@/lib/time";
 import { coupleNames, joinNames } from "@/lib/utils";
 
-/** "Nikah, Reception and Walima" for this guest. */
+/**
+ * The events named in the wording (cover, hero, share preview, RSVP). Events
+ * with `listed: false` are left out unless they are all the guest has.
+ */
+export function listedEvents(events: WeddingEvent[]) {
+  const listed = events.filter((e) => e.listed !== false);
+  return listed.length ? listed : events;
+}
+
+/** "Nikah and Reception" for this guest. */
 export function inviteEventList(invite: Invite) {
-  return joinNames(invite.events.map((e) => e.name));
+  return joinNames(listedEvents(invite.events).map((e) => e.name));
 }
 
 /** The invitation message with `{events}` filled in. */
@@ -16,8 +25,9 @@ export function inviteMessage(invite: Invite) {
 
 /** Link-preview description for this guest. */
 export function inviteDescription(invite: Invite) {
-  const first = invite.events[0].start;
-  const sameDay = invite.events.every((e) => e.start.slice(0, 10) === first.slice(0, 10));
+  const named = listedEvents(invite.events);
+  const first = named[0].start;
+  const sameDay = named.every((e) => e.start.slice(0, 10) === first.slice(0, 10));
   const when = `${sameDay ? "on" : "from"} ${formatFullDate(first)}`;
   return `You are invited to the ${inviteEventList(invite)} of ${coupleNames} ${when} in ${wedding.locationLine.split(",")[0]}. Open the invitation to RSVP.`;
 }

@@ -6,6 +6,7 @@ import { ArrowDown } from "lucide-react";
 import { wedding } from "@/config/wedding";
 import { useExperience } from "@/components/layout/ExperienceProvider";
 import { useInvite } from "@/components/layout/InviteProvider";
+import { listedEvents } from "@/lib/invite-copy";
 import { ScriptName } from "@/components/animations/ScriptName";
 import { Moon } from "@/components/art/Moon";
 import { ShootingStars } from "@/components/art/ShootingStars";
@@ -117,7 +118,7 @@ export function Hero() {
           </motion.div>
           <motion.p className="eyebrow flex items-center justify-center gap-4 short:justify-start lg:justify-start" {...rise(0.1)}>
             <span className="h-px w-10 bg-gold/50" aria-hidden="true" />
-            {joinNames(events.map((e) => e.name), " & ")}
+            {joinNames(listedEvents(events).map((e) => e.name), " & ")}
           </motion.p>
 
           <h1 id="hero-title" className="display-title mt-5 text-[clamp(4.2rem,17vw,12rem)] short:text-[clamp(3.4rem,22svh,6.2rem)] leading-[1] [text-shadow:0_4px_40px_rgba(9,7,8,0.65)]">

@@ -73,6 +73,7 @@ export const events: WeddingEvent[] = [
     name: "Walima",
     start: "2026-12-20T19:00",
     venue: banquet,
+    listed: false, // heart on 20 Dec only — not named in the invitation wording
     description:
       "Join us for our Walima, the wedding feast, as we celebrate our first day as husband and wife.",
   },

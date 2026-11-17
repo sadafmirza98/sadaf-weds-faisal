@@ -8,6 +8,7 @@ import { Illustration } from "@/components/art/Illustration";
 import { RsvpForm } from "@/components/rsvp/RsvpForm";
 import { formatFullDate, formatTime, hasTime } from "@/lib/time";
 import { whatsappUrl } from "@/lib/whatsapp";
+import { listedEvents } from "@/lib/invite-copy";
 
 /** SECTION G — RSVP (sent on WhatsApp) and the contact number. */
 export function Rsvp() {
@@ -30,7 +31,7 @@ export function Rsvp() {
           <p className="body-copy mt-6 max-w-md text-pretty">{rsvp.intro}</p>
 
           <dl className="mt-10 space-y-5 border-l border-gold/20 pl-6">
-            {events.map((e) => (
+            {listedEvents(events).map((e) => (
               <div key={e.id}>
                 <dt className="eyebrow text-[0.6rem] text-ivory/45">{e.name}</dt>
                 <dd className="mt-1 font-display text-xl italic text-ivory">

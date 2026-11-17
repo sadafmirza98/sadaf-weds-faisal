@@ -13,7 +13,6 @@ import { Ornament } from "@/components/art/Ornament";
 import { ShootingStars } from "@/components/art/ShootingStars";
 import { WaxSeal } from "@/components/art/WaxSeal";
 import { formatDottedDate, parseLocal } from "@/lib/time";
-import { coupleNames } from "@/lib/utils";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
