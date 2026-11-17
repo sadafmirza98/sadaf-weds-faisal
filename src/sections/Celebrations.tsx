@@ -34,6 +34,12 @@ export function Celebrations() {
         <div className="mt-8 lg:mt-14">
           <EventComposition events={dayEvents} />
         </div>
+
+        <Reveal delay={0.1} className="mt-4 flex justify-center lg:mt-8">
+          <a href="#rsvp" className="btn-luxe">
+            Kindly RSVP
+          </a>
+        </Reveal>
       </div>
     </section>
   );

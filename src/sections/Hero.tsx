@@ -168,14 +168,6 @@ export function Hero() {
             {hero.message}
           </motion.p>
 
-          <motion.div className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-4 sm:mt-10 short:justify-start lg:justify-start" {...rise(1.3)}>
-            <a href="#rsvp" className="btn-luxe">
-              Kindly RSVP
-            </a>
-            <a href="#celebrations" className="link-luxe">
-              The celebrations
-            </a>
-          </motion.div>
         </div>
       </motion.div>
 
