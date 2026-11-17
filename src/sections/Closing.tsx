@@ -39,20 +39,37 @@ export function Closing() {
   }, [letterOpen]);
 
   const toTop = () => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduce = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
     window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
-    document.querySelector<HTMLElement>("#top a, #top button")?.focus({ preventScroll: true });
+    document
+      .querySelector<HTMLElement>("#top a, #top button")
+      ?.focus({ preventScroll: true });
   };
 
   return (
-    <footer aria-labelledby="closing-title" className="relative overflow-hidden pb-10 pt-[var(--section-y)]">
-      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_70%_60%_at_50%_100%,rgba(92,16,41,0.5),transparent_70%)]" />
-      <div aria-hidden="true" className="starfield absolute inset-0 -z-10 animate-twinkle opacity-40" />
+    <footer
+      aria-labelledby="closing-title"
+      className="relative overflow-hidden pb-10 pt-[var(--section-y)]"
+    >
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_70%_60%_at_50%_100%,rgba(92,16,41,0.5),transparent_70%)]"
+      />
+      <div
+        aria-hidden="true"
+        className="starfield absolute inset-0 -z-10 animate-twinkle opacity-40"
+      />
       <ShootingStars className="-z-10" count={3} />
 
       <div className="shell relative flex flex-col items-center text-center">
         <Reveal>
-          <Illustration name="floral-garland" className="mx-auto w-[min(94vw,820px)]" sizes="(max-width: 768px) 94vw, 820px" />
+          <Illustration
+            name="floral-garland"
+            className="mx-auto w-[min(94vw,820px)]"
+            sizes="(max-width: 768px) 94vw, 820px"
+          />
         </Reveal>
 
         <Reveal delay={0.1} className="-mt-4 max-w-2xl">
@@ -60,19 +77,30 @@ export function Closing() {
           <p className="mt-8 font-display text-[clamp(1.45rem,3.2vw,2.1rem)] font-light italic leading-snug text-ivory/90 text-pretty">
             {closing.message}
           </p>
-          <p className="mt-10 font-display text-lg italic text-ivory/55">{closing.signOff}</p>
+          <p className="mt-10 font-display text-lg italic text-ivory/55">
+            {closing.signOff}
+          </p>
         </Reveal>
 
-        <h2 id="closing-title" className="display-title mt-6 text-[clamp(3.3rem,13vw,10rem)] leading-[1.05]">
+        <h2
+          id="closing-title"
+          className="display-title mt-6 text-[clamp(3.3rem,13vw,10rem)] leading-[1.05]"
+        >
           <ScriptName text={couple.partnerOne.firstName} inView />
-          <span className="gold-text mx-[0.15em] text-[0.5em] not-italic">&amp;</span>
+          <span className="gold-text mx-[0.15em] text-[0.5em] not-italic">
+            &amp;
+          </span>
           <ScriptName text={couple.partnerTwo.firstName} inView delay={0.5} />
         </h2>
 
         <Reveal delay={0.2}>
           <Ornament className="mx-auto mt-8" width="w-56" />
-          <p className="mt-6 font-serif text-[0.8rem] uppercase tracking-[0.4em] text-gold">{formatDottedDate(primary.start)}</p>
-          <p className="mt-2 text-[0.65rem] uppercase tracking-[0.35em] text-ivory/45">{wedding.locationLine}</p>
+          <p className="mt-6 font-serif text-[0.8rem] uppercase tracking-[0.4em] text-gold">
+            {formatDottedDate(primary.start)}
+          </p>
+          <p className="mt-2 text-[0.65rem] uppercase tracking-[0.35em] text-ivory/45">
+            {wedding.locationLine}
+          </p>
         </Reveal>
 
         {/* Easter eggs: a blossom and a tiny seal hiding a letter */}
@@ -102,7 +130,12 @@ export function Closing() {
               className="frame relative mt-10 w-full max-w-md px-8 py-10 text-left outline-none"
               initial={{ opacity: 0, y: 20, rotateX: -50 }}
               animate={{ opacity: 1, y: 0, rotateX: 0 }}
-              exit={{ opacity: 0, y: 10, rotateX: -30, transition: { duration: 0.4, ease: EASE } }}
+              exit={{
+                opacity: 0,
+                y: 10,
+                rotateX: -30,
+                transition: { duration: 0.4, ease: EASE },
+              }}
               transition={{ duration: 0.9, ease: EASE }}
               style={{ transformPerspective: 900, transformOrigin: "top" }}
             >
@@ -117,14 +150,24 @@ export function Closing() {
               >
                 <X className="size-4" aria-hidden="true" />
               </button>
-              <p className="font-display text-lg italic text-gold">{easterEggs.secretLetter.salutation}</p>
-              <p className="mt-4 font-display text-xl italic leading-relaxed text-ivory/85">{easterEggs.secretLetter.body}</p>
-              <p className="mt-6 text-right font-display text-2xl italic text-ivory">— {easterEggs.secretLetter.signature}</p>
+              <p className="font-display text-lg italic text-gold">
+                {easterEggs.secretLetter.salutation}
+              </p>
+              <p className="mt-4 font-display text-xl italic leading-relaxed text-ivory/85">
+                {easterEggs.secretLetter.body}
+              </p>
+              <p className="mt-6 text-right font-display text-2xl italic text-ivory">
+                — {easterEggs.secretLetter.signature}
+              </p>
             </motion.div>
           )}
         </AnimatePresence>
 
-        <button type="button" onClick={toTop} className="group mt-16 flex flex-col items-center gap-3 text-[0.625rem] uppercase tracking-[0.35em] text-ivory/60 transition-colors hover:text-gold">
+        <button
+          type="button"
+          onClick={toTop}
+          className="group mt-16 flex flex-col items-center gap-3 text-[0.625rem] uppercase tracking-[0.35em] text-ivory/60 transition-colors hover:text-gold"
+        >
           <span className="grid size-12 place-items-center rounded-full border border-gold/30 transition-[border-color,transform] duration-700 ease-silk group-hover:-translate-y-1 group-hover:border-gold">
             <ArrowUp className="size-4" aria-hidden="true" />
           </span>
@@ -134,14 +177,21 @@ export function Closing() {
         <div className="mt-20 w-full border-t border-gold/10 pt-8 text-[0.6rem] uppercase tracking-[0.3em] text-ivory/35">
           <p className="mb-3">
             {wedding.contact.eyebrow} ·{" "}
-            <a href={`tel:${wedding.contact.phone.replace(/\s/g, "")}`} className="text-ivory/60 transition-colors hover:text-gold">
+            <a
+              href={`tel:${wedding.contact.phone.replace(/\s/g, "")}`}
+              className="text-ivory/60 transition-colors hover:text-gold"
+            >
               {wedding.contact.phone}
             </a>
           </p>
-          <p>
-            {coupleNames} · {parseLocal(primary.start).year} · Made with love
-          </p>
-          {closing.developedBy && <p className="mt-3 text-ivory/45">Developed by {closing.developedBy}</p>}
+          {closing.developedBy && (
+            <p className="mt-3 text-ivory/45">
+              {" "}
+              {parseLocal(primary.start).year} · Developed by{" "}
+              {closing.developedBy}
+            </p>
+          )}
+          <p></p>
         </div>
       </div>
     </footer>

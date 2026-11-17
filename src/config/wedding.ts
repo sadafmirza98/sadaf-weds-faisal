@@ -122,12 +122,11 @@ export const wedding: WeddingConfig = {
   ],
 
   easterEggs: {
-    moonMessage:
-      "Under every moon, in every lifetime — I would still find you.",
+    moonMessage: "To the curious one",
     secretLetter: {
       salutation: "To whoever found this,",
-      body: "You must be the curious kind. We like that. Keep us in your duas.",
-      signature: "SaFal",
+      body: "You found our hidden seal — few guests ever do. Your reward: a special dua from both of us. May Allah fill your life with every happiness you wish for ours.",
+      signature: "#SaFal",
     },
   },
 
