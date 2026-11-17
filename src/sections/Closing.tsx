@@ -174,17 +174,8 @@ export function Closing() {
         </button>
 
         <div className="mt-20 w-full border-t border-gold/10 pt-8 text-[0.6rem] uppercase tracking-[0.3em] text-ivory/35">
-          <p className="mb-3">
-            {wedding.contact.eyebrow} ·{" "}
-            <a
-              href={`tel:${wedding.contact.phone.replace(/\s/g, "")}`}
-              className="text-ivory/60 transition-colors hover:text-gold"
-            >
-              {wedding.contact.phone}
-            </a>
-          </p>
           {closing.developedBy && (
-            <p className="mt-3 text-ivory/45">
+            <p className="text-ivory/45">
               {" "}
               {parseLocal(primary.start).year} · Developed by{" "}
               {closing.developedBy}
