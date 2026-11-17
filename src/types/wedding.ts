@@ -192,6 +192,8 @@ export interface WeddingConfig {
     eyebrow: string;
     message: string;
     signOff: string;
+    /** Shown at the very bottom as "Developed by …". */
+    developedBy?: string;
   };
   nav: NavItem[];
   easterEggs: EasterEggs;

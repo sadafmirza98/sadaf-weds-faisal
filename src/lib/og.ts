@@ -20,8 +20,22 @@ export async function loadOgAssets() {
   };
 }
 
-export const moonBackground =
-  "radial-gradient(circle at 40% 36%, #F0C3B2 0%, #C4566A 30%, #7A1F38 70%, #350917 100%)";
+/** The crescent and star from components/art/Moon.tsx, as an SVG data URI for generated images. */
+export function moonDataUri() {
+  const sparkle = "M0 -1C0.12 -0.3 0.3 -0.12 1 0C0.3 0.12 0.12 0.3 0 1C-0.12 0.3 -0.3 0.12 -1 0C-0.3 -0.12 -0.12 -0.3 0 -1Z";
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+<defs>
+<linearGradient id="b" x1="0.15" y1="0.85" x2="0.85" y2="0.15"><stop offset="0" stop-color="#C99A5B"/><stop offset="0.35" stop-color="#EBCF9C"/><stop offset="0.7" stop-color="#FBEFD8"/><stop offset="1" stop-color="#FFF8EC"/></linearGradient>
+<mask id="m"><circle cx="100" cy="100" r="72" fill="#fff"/><circle cx="128" cy="80" r="62" fill="#000"/></mask>
+<filter id="h" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5"/></filter>
+</defs>
+<circle cx="100" cy="100" r="72" fill="#F3E3C3" opacity="0.45" mask="url(#m)" filter="url(#h)"/>
+<g mask="url(#m)"><circle cx="100" cy="100" r="72" fill="url(#b)"/><circle cx="100" cy="100" r="71.3" fill="none" stroke="#FFF8EC" stroke-opacity="0.7" stroke-width="1.2"/></g>
+<path d="${sparkle}" transform="translate(142 92) scale(15)" fill="#FFF8EC"/>
+<path d="${sparkle}" transform="translate(166 58) scale(6)" fill="#F3E3C3" opacity="0.8"/>
+</svg>`;
+  return `data:image/svg+xml;base64,${Buffer.from(svg).toString("base64")}`;
+}
 
 /** A five-petal cherry blossom (favicon and home-screen icon) as an SVG data URI. */
 export function blossomDataUri() {

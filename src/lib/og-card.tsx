@@ -2,13 +2,14 @@
 import { ImageResponse } from "next/og";
 import { wedding } from "@/config/wedding";
 import type { Invite } from "@/types/wedding";
-import { loadOgAssets, moonBackground } from "@/lib/og";
+import { loadOgAssets, moonDataUri } from "@/lib/og";
 import { formatFullDate } from "@/lib/time";
 
 export const ogSize = { width: 1200, height: 630 };
 
 // Loaded once at module evaluation so images are prerendered at build time.
 const { fonts, floralDataUri } = await loadOgAssets();
+const moonUri = moonDataUri();
 
 /** The social preview card for one invite: names, its events and its main date. */
 export function renderInviteCard(invite: Invite) {
@@ -27,18 +28,7 @@ export function renderInviteCard(invite: Invite) {
           color: "#F1E7D9",
         }}
       >
-        <div
-          style={{
-            position: "absolute",
-            right: -90,
-            top: -150,
-            width: 300,
-            height: 300,
-            borderRadius: 9999,
-            background: moonBackground,
-            boxShadow: "0 0 120px 40px rgba(184,69,90,0.35)",
-          }}
-        />
+        <img src={moonUri} width={124} height={124} style={{ position: "absolute", right: 64, top: 44 }} alt="" />
         <img src={floralDataUri} width={420} height={420} style={{ position: "absolute", left: -60, top: -60 }} alt="" />
         <img src={floralDataUri} width={360} height={360} style={{ position: "absolute", right: -50, bottom: -50, transform: "rotate(180deg)" }} alt="" />
         <div

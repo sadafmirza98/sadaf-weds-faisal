@@ -4,7 +4,8 @@ import { AnimatePresence, motion } from "motion/react";
 import { useMemo, useSyncExternalStore } from "react";
 import { wedding } from "@/config/wedding";
 import { Reveal } from "@/components/animations/Reveal";
-import { CrimsonMoon } from "@/components/art/CrimsonMoon";
+import { Moon } from "@/components/art/Moon";
+import { ShootingStars } from "@/components/art/ShootingStars";
 import { Illustration } from "@/components/art/Illustration";
 import { Ornament } from "@/components/art/Ornament";
 import { useCountdown } from "@/hooks/useCountdown";
@@ -84,14 +85,13 @@ export function Countdown() {
   return (
     <section id="countdown" aria-labelledby="countdown-title" className="relative isolate overflow-hidden py-[clamp(5rem,16vw,12rem)]">
       <div aria-hidden="true" className="starfield absolute inset-0 -z-20 animate-twinkle opacity-60" />
+      <ShootingStars className="-z-20" count={3} />
       <div aria-hidden="true" className="absolute inset-0 -z-20 bg-[radial-gradient(ellipse_60%_55%_at_50%_100%,rgba(116,29,53,0.45),transparent_70%)]" />
-      <div aria-hidden="true" className="absolute bottom-0 left-1/2 -z-10 w-[min(78vw,560px)] -translate-x-1/2 translate-y-[58%] opacity-75">
-        <CrimsonMoon idPrefix="cd-moon" />
-      </div>
       <div aria-hidden="true" className="absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-t from-obsidian to-transparent" />
 
       <div className="shell text-center">
         <Reveal>
+          <Moon idPrefix="cd-moon" className="mx-auto mb-6 w-16 sm:w-20" />
           <p className="eyebrow">{countdown.eyebrow}</p>
           <h2 id="countdown-title" className="display-title mx-auto mt-6 max-w-3xl text-[clamp(2.6rem,6.5vw,4.75rem)] italic text-balance">
             {done ? countdown.celebrationTitle : countdown.title}

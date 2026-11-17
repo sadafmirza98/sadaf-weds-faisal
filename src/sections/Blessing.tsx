@@ -4,6 +4,7 @@ import { Reveal } from "@/components/animations/Reveal";
 import { SakuraBurst } from "@/components/animations/SakuraBurst";
 import { Illustration } from "@/components/art/Illustration";
 import { Ornament } from "@/components/art/Ornament";
+import { RedThread } from "@/components/art/RedThread";
 
 /**
  * The families, as on a Nikah card — straight after the hero.
@@ -30,9 +31,7 @@ export function Families() {
           </h2>
           <div className="mt-10 grid items-center gap-8 sm:grid-cols-[1fr_auto_1fr] sm:gap-10">
             <Family person={couple.partnerOne} />
-            <span aria-hidden="true" className="gold-text font-display text-4xl italic">
-              &amp;
-            </span>
+            <RedThread className="mx-auto w-44 sm:w-48" />
             <Family person={couple.partnerTwo} />
           </div>
         </Reveal>

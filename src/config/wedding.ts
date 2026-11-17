@@ -111,6 +111,7 @@ export const wedding: WeddingConfig = {
     message:
       "Thank you for the love, the laughter and the duas that brought us here. Your presence is the greatest gift we could ask for, and we cannot wait to celebrate with you.",
     signOff: "With love and duas,",
+    developedBy: "Sadaf Mirza",
   },
 
   nav: [

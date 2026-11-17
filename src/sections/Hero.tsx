@@ -7,7 +7,8 @@ import { wedding } from "@/config/wedding";
 import { useExperience } from "@/components/layout/ExperienceProvider";
 import { useInvite } from "@/components/layout/InviteProvider";
 import { ScriptName } from "@/components/animations/ScriptName";
-import { CrimsonMoon } from "@/components/art/CrimsonMoon";
+import { Moon } from "@/components/art/Moon";
+import { ShootingStars } from "@/components/art/ShootingStars";
 import { Bismillah } from "@/components/art/Bismillah";
 import { Illustration } from "@/components/art/Illustration";
 import { formatLongDate, weekdayOf } from "@/lib/time";
@@ -56,11 +57,12 @@ export function Hero() {
       <div aria-hidden="true" className="absolute inset-0 -z-20 bg-[radial-gradient(ellipse_80%_60%_at_70%_30%,rgba(92,16,41,0.45),transparent_60%),radial-gradient(ellipse_90%_50%_at_20%_100%,rgba(64,13,32,0.6),transparent_70%)]" />
       <div aria-hidden="true" className="starfield absolute inset-0 -z-20 animate-twinkle opacity-70" />
       <div aria-hidden="true" className="starfield-alt absolute inset-0 -z-20 opacity-60 [animation:twinkle_7s_ease-in-out_infinite_1.5s]" />
+      <ShootingStars className="-z-20" />
 
       {/* Moon (interactive easter egg) */}
       <motion.div
         style={{ y: moonY }}
-        className="absolute left-1/2 top-[8svh] -z-10 w-[min(58vw,34svh)] -translate-x-1/2 short:left-auto short:right-[7%] short:top-[22svh] short:w-[min(52svh,34vw)] short:translate-x-0 lg:left-auto lg:right-[9%] lg:top-[13%] lg:w-[min(36vw,520px)] lg:translate-x-0"
+        className="absolute left-1/2 top-[9svh] -z-10 w-[min(30vw,17svh)] -translate-x-1/2 short:left-auto short:right-[9%] short:top-[20svh] short:w-[min(28svh,18vw)] short:translate-x-0 lg:left-auto lg:right-[25%] lg:top-[10%] lg:w-[min(16vw,240px)] lg:translate-x-0"
         initial={{ opacity: 0, scale: 0.9 }}
         animate={revealed ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
         transition={{ duration: 2.4, delay: base, ease: EASE }}
@@ -72,7 +74,7 @@ export function Hero() {
           aria-label="The moon"
           className="relative block w-full cursor-pointer rounded-full transition-[filter] duration-700 ease-silk hover:brightness-110"
         >
-          <CrimsonMoon idPrefix="hero-moon" />
+          <Moon idPrefix="hero-moon" />
         </button>
       </motion.div>
 

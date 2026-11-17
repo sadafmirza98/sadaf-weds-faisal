@@ -8,7 +8,8 @@ import { useMusic } from "@/components/music/MusicProvider";
 import { useInvite } from "@/components/layout/InviteProvider";
 import { inviteMessage } from "@/lib/invite-copy";
 import { ScriptName } from "@/components/animations/ScriptName";
-import { CrimsonMoon } from "@/components/art/CrimsonMoon";
+import { Moon } from "@/components/art/Moon";
+import { ShootingStars } from "@/components/art/ShootingStars";
 import { Illustration } from "@/components/art/Illustration";
 import { Bismillah } from "@/components/art/Bismillah";
 import { Ornament } from "@/components/art/Ornament";
@@ -128,6 +129,7 @@ export function InvitationGate() {
               transition={{ duration: 2.5, delay: 0.2 }}
               aria-hidden="true"
             />
+            <ShootingStars count={2} />
 
             {/* Arch frame */}
             <div className="relative flex h-[min(92svh,780px)] w-[min(90vw,440px)] flex-col items-center short:h-[94svh] short:w-[min(64vw,560px)]">
@@ -144,12 +146,12 @@ export function InvitationGate() {
 
               <div className="relative flex h-full w-full flex-col items-center justify-between px-6 pb-[clamp(1.25rem,4svh,2.5rem)] pt-[clamp(1.75rem,6svh,3.5rem)] text-center short:pb-3 short:pt-[9svh]">
                 <motion.div
-                  className="w-[min(36vw,17svh,170px)] short:hidden"
+                  className="w-[min(22vw,11svh,110px)] short:hidden"
                   initial={{ opacity: 0, y: 40, scale: 0.92 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   transition={{ duration: 2, delay: 0.4, ease: EASE }}
                 >
-                  <CrimsonMoon idPrefix="gate-moon" />
+                  <Moon idPrefix="gate-moon" />
                 </motion.div>
 
                 <div className="flex flex-col items-center">

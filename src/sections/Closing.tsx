@@ -10,6 +10,7 @@ import { SakuraBurst } from "@/components/animations/SakuraBurst";
 import { ScriptName } from "@/components/animations/ScriptName";
 import { Illustration } from "@/components/art/Illustration";
 import { Ornament } from "@/components/art/Ornament";
+import { ShootingStars } from "@/components/art/ShootingStars";
 import { WaxSeal } from "@/components/art/WaxSeal";
 import { formatDottedDate, parseLocal } from "@/lib/time";
 import { coupleNames } from "@/lib/utils";
@@ -47,6 +48,7 @@ export function Closing() {
     <footer aria-labelledby="closing-title" className="relative overflow-hidden pb-10 pt-[var(--section-y)]">
       <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_70%_60%_at_50%_100%,rgba(92,16,41,0.5),transparent_70%)]" />
       <div aria-hidden="true" className="starfield absolute inset-0 -z-10 animate-twinkle opacity-40" />
+      <ShootingStars className="-z-10" count={3} />
 
       <div className="shell relative flex flex-col items-center text-center">
         <Reveal>
@@ -139,6 +141,7 @@ export function Closing() {
           <p>
             {coupleNames} · {parseLocal(primary.start).year} · Made with love
           </p>
+          {closing.developedBy && <p className="mt-3 text-ivory/45">Developed by {closing.developedBy}</p>}
         </div>
       </div>
     </footer>
