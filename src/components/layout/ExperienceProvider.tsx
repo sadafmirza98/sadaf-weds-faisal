@@ -2,7 +2,6 @@
 
 import { MotionConfig } from "motion/react";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { safeStorage } from "@/lib/utils";
 
 /**
  * Coordinates the invitation gate and the main experience.
@@ -25,22 +24,26 @@ interface ExperienceState {
 }
 
 const ExperienceContext = createContext<ExperienceState | null>(null);
-const OPENED_KEY = "wedding:opened";
 
 export function ExperienceProvider({ children }: { children: React.ReactNode }) {
   const [phase, setPhase] = useState<Phase>("gate");
 
-  // Returning guests (same tab session), deep links (#rsvp) and ?open=1 skip the cover.
+  // The cover shows on every visit. Only ?open=1 (testing/previews) skips it,
+  // jumping to a section if the link names one (?open=1#rsvp).
   useEffect(() => {
     const url = new URL(window.location.href);
-    const deepLinked = url.hash.length > 1 || url.searchParams.get("open") === "1";
-    if (deepLinked || safeStorage.get("session", OPENED_KEY) === "1") {
+    if (url.searchParams.get("open") === "1") {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- reading browser-only state after hydration
       setPhase("open");
       if (url.hash.length > 1) {
         requestAnimationFrame(() => document.getElementById(url.hash.slice(1))?.scrollIntoView());
       }
+      return;
     }
+    // A refresh after tapping a section link (#rsvp) still starts at the cover, with the page at the top behind it.
+    history.scrollRestoration = "manual";
+    if (url.hash) history.replaceState(null, "", url.pathname + url.search);
+    window.scrollTo({ top: 0 });
   }, []);
 
   // Lock page scroll while the cover is visible.
@@ -57,19 +60,14 @@ export function ExperienceProvider({ children }: { children: React.ReactNode }) 
   }, [phase]);
 
   const beginOpening = useCallback(() => setPhase((p) => (p === "gate" ? "opening" : p)), []);
-  const finishOpening = useCallback(() => {
-    safeStorage.set("session", OPENED_KEY, "1");
-    setPhase("open");
-  }, []);
+  const finishOpening = useCallback(() => setPhase("open"), []);
   const skipToSite = useCallback(() => {
-    safeStorage.set("session", OPENED_KEY, "1");
     window.scrollTo({ top: 0 });
     setPhase("open");
   }, []);
 
   const returnToGate = useCallback(() => {
-    safeStorage.set("session", OPENED_KEY, "0");
-    // The head script in layout.tsx hides the cover for returning guests; undo that.
+    // The head script in layout.tsx hides the cover for ?open=1 links; undo that.
     document.documentElement.removeAttribute("data-opened");
     if (window.location.hash) history.replaceState(null, "", window.location.pathname + window.location.search);
     window.scrollTo({ top: 0 });

@@ -45,7 +45,8 @@ const amiri = Amiri({
 
 const { seo } = wedding;
 
-const skipGateScript = `try{var u=new URL(location.href);if(u.hash.length>1||u.searchParams.get("open")==="1"||sessionStorage.getItem("wedding:opened")==="1")document.documentElement.setAttribute("data-opened","")}catch(e){}`;
+// The cover shows on every visit; only ?open=1 (testing/previews) skips it.
+const skipGateScript = `try{if(new URL(location.href).searchParams.get("open")==="1")document.documentElement.setAttribute("data-opened","")}catch(e){}`;
 
 export const metadata: Metadata = {
   metadataBase: siteUrl(),
@@ -83,7 +84,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${cormorant.variable} ${playfair.variable} ${inter.variable} ${amiri.variable} ${royalScript.variable}`} suppressHydrationWarning>
       <head>
-        {/* Returning guests / deep links skip the invitation cover before first paint. */}
+        {/* ?open=1 links skip the invitation cover before first paint. */}
         <script dangerouslySetInnerHTML={{ __html: skipGateScript }} />
       </head>
       <body className="min-h-svh antialiased">

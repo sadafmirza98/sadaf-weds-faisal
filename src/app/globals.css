@@ -97,7 +97,7 @@
     color: var(--color-ivory);
   }
 
-  /* Skip the invitation cover before hydration for returning guests / deep links. */
+  /* Skip the invitation cover before hydration for ?open=1 links. */
   html[data-opened] .gate {
     display: none;
   }
