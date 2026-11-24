@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, animate, motion, useAnimate, useMotionValue, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { animate, motion, useAnimate, useMotionValue, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { ArrowDown } from "lucide-react";
 import { wedding } from "@/config/wedding";
@@ -33,21 +33,16 @@ export function Hero() {
   const reduce = useReducedMotion();
   const sakuraGrowth = useMotionValue(0);
 
-  // Easter egg: three taps on the moon reveal a hidden line.
-  const [taps, setTaps] = useState(0);
-  const [secret, setSecret] = useState(false);
+  // Tapping the moon: it swells big and settles back, while a ring of light
+  // ripples out and a ring of sparkles bursts around it.
   const [moonScope, animateMoon] = useAnimate<HTMLButtonElement>();
-  useEffect(() => {
-    if (!secret) return;
-    const t = window.setTimeout(() => setSecret(false), 9000);
-    return () => window.clearTimeout(t);
-  }, [secret]);
+  const [moonBursts, setMoonBursts] = useState<number[]>([]);
   const onMoon = () => {
-    const next = taps + 1;
-    setTaps(next);
-    // A gentle swell on every tap (on top of the hover growth on desktop).
-    animateMoon(moonScope.current, { scale: [1, 1.16, 1.05, 1] }, { duration: 1.1, times: [0, 0.35, 0.7, 1], ease: EASE });
-    if (next % 3 === 0) setSecret(true);
+    if (reduce) return;
+    animateMoon(moonScope.current, { scale: [1, 1.32, 1.14, 1] }, { duration: 1.6, times: [0, 0.3, 0.65, 1], ease: EASE });
+    const id = Date.now();
+    setMoonBursts((b) => [...b.slice(-2), id]);
+    window.setTimeout(() => setMoonBursts((b) => b.filter((x) => x !== id)), 1800);
   };
 
   const base = revealed ? 0.75 : 0;
@@ -84,14 +79,17 @@ export function Hero() {
         animate={revealed ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
         transition={{ duration: 2.4, delay: base, ease: EASE }}
       >
-        {/* Grows a little on hover (pointer devices only) */}
-        <div className="transition-transform duration-700 ease-silk hover:scale-110">
+        {/* Grows and glows on hover (pointer devices only) */}
+        <div className="relative transition-[transform,filter] duration-700 ease-silk hover:scale-[1.15] hover:brightness-125">
+          {moonBursts.map((id) => (
+            <MoonBurst key={id} />
+          ))}
           <button
             ref={moonScope}
             type="button"
             onClick={onMoon}
             aria-label="The moon"
-            className="relative block w-full cursor-pointer rounded-full transition-[filter] duration-700 ease-silk hover:brightness-110"
+            className="relative block w-full cursor-pointer rounded-full"
           >
             <AnimeMoon idPrefix="hero-moon" />
           </button>
@@ -155,21 +153,6 @@ export function Hero() {
             </span>
           </h1>
 
-          <AnimatePresence>
-            {secret && (
-              <motion.p
-                role="status"
-                className="mx-auto mt-6 max-w-md font-display text-xl italic text-gold [text-shadow:0_0_24px_rgba(213,185,138,0.45)] short:mx-0 lg:mx-0"
-                initial={{ opacity: 0, y: 10, filter: "blur(6px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                exit={{ opacity: 0, y: -6, filter: "blur(6px)" }}
-                transition={{ duration: 1, ease: EASE }}
-              >
-                ✦ {wedding.easterEggs.moonMessage}
-              </motion.p>
-            )}
-          </AnimatePresence>
-
           <motion.div
             className="mt-8 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 font-serif text-[0.75rem] uppercase tracking-[0.24em] text-ivory/85 sm:mt-9 sm:gap-x-6 sm:text-[0.8rem] sm:tracking-[0.32em] short:justify-start lg:justify-start"
             {...rise(1)}
@@ -203,5 +186,48 @@ export function Hero() {
         <ArrowDown className="size-3" aria-hidden="true" />
       </motion.a>
     </section>
+  );
+}
+
+const SPARKLE = "M0 -1C0.12 -0.3 0.3 -0.12 1 0C0.3 0.12 0.12 0.3 0 1C-0.12 0.3 -0.3 0.12 -1 0C-0.3 -0.12 -0.12 -0.3 0 -1Z";
+
+/** One tap's flourish around the moon: a ripple of light and a ring of sparkles flying outward. */
+function MoonBurst() {
+  const count = 10;
+  return (
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+      {/* ripple of light */}
+      <motion.span
+        className="absolute inset-[8%] rounded-full border border-[#FFF1DE]/70 shadow-[0_0_30px_6px_rgba(255,236,210,0.35)]"
+        initial={{ scale: 0.7, opacity: 0.9 }}
+        animate={{ scale: 2.1, opacity: 0 }}
+        transition={{ duration: 1.4, ease: EASE }}
+      />
+      {/* sparkles */}
+      {Array.from({ length: count }, (_, i) => {
+        const a = (i / count) * Math.PI * 2 + 0.3;
+        const r = i % 2 ? 52 : 66; // distance from the centre, % of the moon's box (its disc reaches ~36%)
+        const size = i % 3 === 0 ? 22 : 14;
+        return (
+          <motion.svg
+            key={i}
+            viewBox="-1 -1 2 2"
+            className="absolute drop-shadow-[0_0_6px_rgba(255,240,220,0.9)]"
+            style={{ width: size, height: size, marginLeft: -size / 2, marginTop: -size / 2 }}
+            initial={{ left: "50%", top: "50%", scale: 0, opacity: 0, rotate: 0 }}
+            animate={{
+              left: `${50 + Math.cos(a) * r}%`,
+              top: `${50 + Math.sin(a) * r}%`,
+              scale: [0, 1.2, 0.6],
+              opacity: [0, 1, 0],
+              rotate: 90,
+            }}
+            transition={{ duration: 1.3, delay: 0.05 + (i % 3) * 0.05, ease: [0.2, 0.7, 0.3, 1] }}
+          >
+            <path d={SPARKLE} fill={i % 2 ? "#F0C9D0" : "#FFF6E6"} />
+          </motion.svg>
+        );
+      })}
+    </div>
   );
 }

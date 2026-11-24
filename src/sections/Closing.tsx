@@ -53,7 +53,7 @@ export function Closing() {
       aria-labelledby="closing-title"
       className="relative overflow-hidden pb-10 pt-[var(--section-y)]"
     >
-      {/* a sakura sprig grows in from the side as this scrolls into view */}
+      {/* desktop: a sakura sprig grows in from the margin as this scrolls into view */}
       <SideSakura side="left" variant={1} className="top-[22%]" />
       <div
         aria-hidden="true"

@@ -125,7 +125,7 @@ export function SaveTheDate() {
 
   return (
     <section id="calendar" aria-labelledby="calendar-title" className="section-y relative overflow-hidden">
-      {/* a sakura sprig grows in from the side as this scrolls into view */}
+      {/* desktop: a sakura sprig grows in from the margin as this scrolls into view */}
       <SideSakura side="left" variant={0} className="top-[42%]" />
       <div aria-hidden="true" className="starfield absolute inset-0 -z-10 animate-twinkle opacity-40" />
       <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_55%_50%_at_50%_55%,rgba(92,16,41,0.4),transparent_70%)]" />

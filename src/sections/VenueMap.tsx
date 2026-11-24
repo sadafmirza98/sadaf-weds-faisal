@@ -38,13 +38,13 @@ export function VenueMap() {
   // its tail) as you scroll down, back again as you scroll up. It sits where it
   // was placed when the heading is in view (progress ≈ 0.38).
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start end", "end start"] });
-  const cometX = useTransform(scrollYProgress, [0, 0.38, 1], ["50%", "0%", "-130%"]);
-  const cometY = useTransform(scrollYProgress, [0, 0.38, 1], ["-47%", "0%", "122%"]);
+  const cometX = useTransform(scrollYProgress, [0, 0.38, 1], ["90%", "0%", "-230%"]);
+  const cometY = useTransform(scrollYProgress, [0, 0.38, 1], ["-84%", "0%", "216%"]);
   if (!venues.length) return null;
 
   return (
     <section ref={sectionRef} id="venue" aria-labelledby="venue-title" className="section-y relative isolate overflow-hidden">
-      {/* a sakura sprig grows in from the side as this scrolls into view */}
+      {/* desktop: a sakura sprig grows in from the margin as this scrolls into view */}
       <SideSakura side="right" variant={1} className="bottom-[6%]" />
       {/* Twilight: night above, a violet hour, then the last burgundy light */}
       <div

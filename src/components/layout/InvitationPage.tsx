@@ -5,6 +5,7 @@ import { MainContent } from "@/components/layout/MainContent";
 import { SiteNav } from "@/components/layout/SiteNav";
 import { InvitationGate } from "@/components/invitation/InvitationGate";
 import { PetalField } from "@/components/animations/PetalField";
+import { SakuraBreak } from "@/components/art/GrowingSakura";
 import { MusicProvider } from "@/components/music/MusicProvider";
 import { MusicToggle } from "@/components/music/MusicToggle";
 import { Hero } from "@/sections/Hero";
@@ -34,11 +35,16 @@ export function InvitationPage({ invite }: { invite: Invite }) {
           <MainContent>
             <Hero />
             <Families />
+            {/* Phones: sakura grows in the open space between sections */}
+            <SakuraBreak side="left" variant={0} />
             <Celebrations />
+            <SakuraBreak side="right" variant={1} />
             <Countdown />
             <SaveTheDate />
+            <SakuraBreak side="left" variant={1} />
             <VenueMap />
             <Rsvp />
+            <SakuraBreak side="right" variant={0} />
             <Closing />
           </MainContent>
           <MusicToggle />

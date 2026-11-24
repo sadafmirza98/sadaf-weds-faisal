@@ -17,7 +17,7 @@ export function Families() {
 
   return (
     <section id="families" aria-labelledby="families-title" className="section-y relative overflow-hidden">
-      {/* a sakura sprig grows in from the side as this scrolls into view */}
+      {/* desktop: a sakura sprig grows in from the margin as this scrolls into view */}
       <SideSakura side="right" variant={0} className="top-[6%]" />
       <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
       <Illustration name="floral-corner" className="absolute -left-24 top-16 hidden w-80 -scale-y-100 opacity-25 lg:block" />

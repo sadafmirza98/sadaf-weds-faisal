@@ -14,7 +14,7 @@ export function Rsvp() {
 
   return (
     <section id="rsvp" aria-labelledby="rsvp-title" className="section-y relative overflow-hidden bg-[radial-gradient(ellipse_60%_50%_at_80%_50%,rgba(64,13,32,0.45),transparent_70%)]">
-      {/* a sakura sprig grows in from the side as this scrolls into view */}
+      {/* desktop: a sakura sprig grows in from the margin as this scrolls into view */}
       <SideSakura side="right" variant={2} className="top-[52%]" />
       <Illustration name="floral-corner" className="absolute -left-24 top-0 w-64 opacity-40 sm:w-96 lg:opacity-50" />
 

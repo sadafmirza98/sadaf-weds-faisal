@@ -194,7 +194,13 @@ function branch(x, y, angle, len, width, depth, R, blossoms, color = "#1A0B10", 
 function sakuraTree(x, y, angle, len, width, depth, seed, blossomScale = 1, color, rec = null, lite = false) {
   const R = rng(seed);
   const blossoms = [];
-  let out = branch(x, y, angle, len, width, depth, R, blossoms, color, rec);
+  const out = branch(x, y, angle, len, width, depth, R, blossoms, color, rec);
+  return out + blossomsAt(blossoms, R, blossomScale, rec, lite);
+}
+
+/** Sakura (and the odd bud) clustered around each branch tip. */
+function blossomsAt(blossoms, R, blossomScale, rec, lite) {
+  let out = "";
   for (const [bx, by, d, at] of blossoms) {
     const n = d <= 1 ? 3 : 2;
     for (let i = 0; i < n; i++) {
@@ -332,24 +338,82 @@ function sakuraBranchData() {
 }
 
 /**
+ * A long, low sakura vine: a gently wavering stem running in from the left
+ * edge, with short twigs alternating up and down and blossoms along it. Low
+ * enough to sit in the empty padding between two sections on a phone.
+ */
+function sakuraVine(seed) {
+  const R = rng(seed);
+  const rec = { segments: [], blossoms: [], petals: [] };
+  const blossoms = [];
+  const color = "#2A1620";
+  let x = -10;
+  let y = 70;
+  let angle = -3;
+  let width = 6.5;
+  let dist = 0;
+  for (let i = 0; i < 7; i++) {
+    const len = 58 + R() * 18;
+    const rad = (angle * Math.PI) / 180;
+    const bend = (R() - 0.5) * 30;
+    const mx = x + Math.cos(rad + (bend * Math.PI) / 360) * len * 0.5;
+    const my = y + Math.sin(rad + (bend * Math.PI) / 360) * len * 0.5;
+    const ex = x + Math.cos(rad) * len;
+    const ey = y + Math.sin(rad) * len;
+    const d = `M${f(x)} ${f(y)}Q${f(mx)} ${f(my)} ${f(ex)} ${f(ey)}`;
+    const hd = `M${f(x)} ${f(y - width * 0.25)}Q${f(mx)} ${f(my - width * 0.25)} ${f(ex)} ${f(ey - width * 0.25)}`;
+    const hw = f(Math.max(0.6, width * 0.22));
+    rec.segments.push({ d, hd, w: f(width), hw, color, from: f(dist), to: f(dist + len) });
+    dist += len;
+    // a short twig, alternately up and down, flattened so the vine stays low
+    const up = i % 2 ? 1 : -1;
+    branch(ex, ey, angle + up * (22 + R() * 18), 24 + R() * 14, width * 0.55, 2, R, blossoms, color, rec, dist);
+    if (R() > 0.35) blossoms.push([ex, ey, 1, dist]);
+    x = ex;
+    y = ey;
+    width *= 0.9;
+    angle = Math.max(-9, Math.min(9, angle + (R() - 0.5) * 14 - (y - 70) * 0.25));
+  }
+  // Only the recorded data is used (the site draws the vine itself).
+  blossomsAt(blossoms, R, 0.9, rec, true);
+  const xs = [];
+  const ys = [];
+  for (const sg of rec.segments) {
+    const n = sg.d.match(/-?\d+(\.\d+)?/g).map(Number);
+    for (let i = 0; i < n.length; i += 2) {
+      xs.push(n[i]);
+      ys.push(n[i + 1]);
+    }
+  }
+  const pad = 24;
+  const y0 = Math.floor(Math.min(...ys) - pad);
+  return {
+    viewBox: [0, y0, Math.ceil(Math.max(...xs) + pad), Math.ceil(Math.max(...ys) + pad) - y0],
+    length: dist,
+    segments: rec.segments,
+    blossoms: rec.blossoms.map((b) => ({ ...b, markup: prefixUrls(b.markup) })),
+    petals: [],
+  };
+}
+
+/**
  * Small sakura sprigs that grow in from the left edge of a section as the
  * guest scrolls (mirrored on the right). Lighter than the hero branch so
  * several can sit on one page, even on phones.
  */
 function sakuraSprigsData() {
-  const variants = [
-    { seed: 71, angle: -24, len: 150, width: 8 },
-    { seed: 74, angle: -6, len: 160, width: 8 },
-    { seed: 77, angle: 14, len: 140, width: 7 },
-  ].map(({ seed, angle, len, width }) => {
+  const fitted = (seed, angle, len, width, depth, scale) => {
     const rec = { segments: [], blossoms: [], petals: [] };
-    sakuraTree(-10, 220, angle, len, width, 5, seed, 1, "#2A1620", rec, true);
+    sakuraTree(-10, 220, angle, len, width, depth, seed, scale, "#2A1620", rec, true);
     // Fit the viewBox to what was drawn (blossoms reach ~20px past their twig).
     const xs = [];
     const ys = [];
     for (const sg of rec.segments) {
       const n = sg.d.match(/-?\d+(\.\d+)?/g).map(Number);
-      for (let i = 0; i < n.length; i += 2) (xs.push(n[i]), ys.push(n[i + 1]));
+      for (let i = 0; i < n.length; i += 2) {
+      xs.push(n[i]);
+      ys.push(n[i + 1]);
+    }
     }
     const pad = 32;
     const x0 = 0;
@@ -363,8 +427,15 @@ function sakuraSprigsData() {
       blossoms: rec.blossoms.map((b) => ({ ...b, markup: prefixUrls(b.markup) })),
       petals: [],
     };
-  });
-  return JSON.stringify({ defs: sakuraDefs(), variants }) + "\n";
+  };
+  const variants = [
+    { seed: 71, angle: -24, len: 150, width: 8 },
+    { seed: 74, angle: -6, len: 160, width: 8 },
+    { seed: 77, angle: 14, len: 140, width: 7 },
+  ].map(({ seed, angle, len, width }) => fitted(seed, angle, len, width, 5, 1));
+  // Long, low vines for the gaps between sections on phones.
+  const vines = [91, 94].map((seed) => sakuraVine(seed));
+  return JSON.stringify({ defs: sakuraDefs(), variants, vines }) + "\n";
 }
 
 function floralSpray() {

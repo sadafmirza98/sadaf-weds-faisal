@@ -4,12 +4,12 @@ import { AnimatePresence, motion } from "motion/react";
 import { useMemo, useSyncExternalStore } from "react";
 import { wedding } from "@/config/wedding";
 import { Reveal } from "@/components/animations/Reveal";
-import { Moon } from "@/components/art/Moon";
+import { AnimeClock } from "@/components/art/AnimeClock";
 import { ShootingStars } from "@/components/art/ShootingStars";
 import { Illustration } from "@/components/art/Illustration";
 import { Ornament } from "@/components/art/Ornament";
 import { useCountdown } from "@/hooks/useCountdown";
-import { formatFullDate, formatTime, hasTime, zonedTimeToUtc } from "@/lib/time";
+import { formatFullDate, formatTime, hasTime, parseLocal, zonedTimeToUtc } from "@/lib/time";
 import { SideSakura } from "@/components/art/GrowingSakura";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -46,6 +46,23 @@ function Unit({ value, label, pad = 2 }: { value: number | null; label: string; 
       <span className="eyebrow mt-4 text-[0.6rem] text-gold/85 sm:text-[0.6875rem]">{label}</span>
     </div>
   );
+}
+
+/** 19, 12, 2026 → "XIX · XII · MMXXVI", engraved on the clock. */
+function roman(n: number) {
+  const table: [number, string][] = [[1000, "M"], [900, "CM"], [500, "D"], [400, "CD"], [100, "C"], [90, "XC"], [50, "L"], [40, "XL"], [10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]];
+  let out = "";
+  for (const [v, sym] of table) {
+    while (n >= v) {
+      out += sym;
+      n -= v;
+    }
+  }
+  return out;
+}
+function romanDate(moment: string) {
+  const { day, month, year } = parseLocal(moment);
+  return [day, month, year].map(roman).join(" · ");
 }
 
 const subscribeNoop = () => () => {};
@@ -85,8 +102,8 @@ export function Countdown() {
 
   return (
     <section id="countdown" aria-labelledby="countdown-title" className="relative isolate overflow-hidden py-[clamp(5rem,16vw,12rem)]">
-      {/* a sakura sprig grows in from the side as this scrolls into view */}
-      <SideSakura side="right" variant={2} className="bottom-[2%] lg:bottom-auto lg:top-[8%]" />
+      {/* desktop: a sakura sprig grows in from the margin as this scrolls into view */}
+      <SideSakura side="right" variant={2} className="top-[8%]" />
       <div aria-hidden="true" className="starfield absolute inset-0 -z-20 animate-twinkle opacity-60" />
       <ShootingStars className="-z-20" count={3} />
       <div aria-hidden="true" className="absolute inset-0 -z-20 bg-[radial-gradient(ellipse_60%_55%_at_50%_100%,rgba(116,29,53,0.45),transparent_70%)]" />
@@ -94,7 +111,13 @@ export function Countdown() {
 
       <div className="shell text-center">
         <Reveal>
-          <Moon idPrefix="cd-moon" className="mx-auto mb-6 w-16 sm:w-20" />
+          {/* an enchanted clock whose hands run backwards to the day */}
+          <AnimeClock
+            idPrefix="cd-clock"
+            secondsLeft={left && !done ? Math.floor(left.total / 1000) : null}
+            dateLine={romanDate(moment)}
+            className="mx-auto mb-10 w-[min(62vw,240px)] sm:mb-12 sm:w-64 lg:w-72"
+          />
           <p className="eyebrow">{countdown.eyebrow}</p>
           <h2 id="countdown-title" className="display-title mx-auto mt-6 max-w-3xl text-[clamp(2.6rem,6.5vw,4.75rem)] italic text-balance">
             {done ? countdown.celebrationTitle : countdown.title}

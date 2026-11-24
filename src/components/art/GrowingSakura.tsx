@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from "motion/react";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import branchArt from "./sakura-branch.json";
 import sprigArt from "./sakura-sprigs.json";
@@ -105,38 +105,79 @@ export function GrowingSakura({ growth, className }: { growth: MotionValue<numbe
   return <Growing art={branchArt} defs={branchArt.defs} growth={growth} ease={3} className={className} />;
 }
 
+/** True on wide screens (lg and up). False on the server and the first render. */
+function useWide() {
+  const [wide, setWide] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const update = () => setWide(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  return wide;
+}
+
 /**
- * A sakura sprig growing in from the left or right edge of its section as the
- * guest scrolls it into view — and back as they scroll away. Place it inside a
- * `relative overflow-hidden` section, before the content, so it sits behind.
+ * Growth 0 → 1 as `ref` scrolls in: it starts as its top enters the screen and
+ * is in full bloom once all of it is in view (its bottom three-quarters of the
+ * way down the screen). Reversible.
  */
-export function SideSakura({
-  side,
-  variant = 0,
-  className,
-}: {
-  side: "left" | "right";
-  variant?: 0 | 1 | 2;
-  className?: string;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
+function useScrollGrowth(ref: React.RefObject<HTMLElement | null>) {
   const reduce = useReducedMotion();
-  // Starts growing as the sprig enters at the bottom; full bloom by the time it
-  // reaches the middle of the screen.
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "center 0.45"] });
-  const growth = useTransform(scrollYProgress, (p) => (reduce ? 1 : p));
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.95", "end 0.75"] });
+  return useTransform(scrollYProgress, (p) => (reduce ? 1 : p));
+}
+
+/**
+ * Desktop only: a sakura sprig growing in from the left or right margin of its
+ * section as the guest scrolls it into view — and back as they scroll away.
+ * Place it inside a `relative overflow-hidden` section, before the content.
+ * (Phones have no side margins, so they get <SakuraBreak> between sections.)
+ */
+export function SideSakura(props: { side: "left" | "right"; variant?: 0 | 1 | 2; className?: string }) {
+  const wide = useWide();
+  return wide ? <SideSprig {...props} /> : null;
+}
+
+function SideSprig({ side, variant = 0, className }: { side: "left" | "right"; variant?: 0 | 1 | 2; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const growth = useScrollGrowth(ref);
   return (
     <div
       ref={ref}
       aria-hidden="true"
-      className={cn(
-        // Phones have no side margins: smaller and softer there so text stays easy to read.
-        "pointer-events-none absolute w-[min(52vw,320px)] opacity-60 sm:opacity-85 lg:w-[min(22vw,360px)] lg:opacity-90",
-        side === "left" ? "-left-3" : "-right-3",
-        className,
-      )}
+      className={cn("pointer-events-none absolute w-[min(22vw,360px)] opacity-90", side === "left" ? "-left-3" : "-right-3", className)}
     >
       <Growing art={sprigArt.variants[variant]} defs={sprigArt.defs} growth={growth} ease={2} flip={side === "right"} className="h-auto w-full" />
+    </div>
+  );
+}
+
+/**
+ * Phones and tablets only: a long, low sakura vine laid across the seam
+ * between two sections, in the empty padding they already have — it takes up
+ * no space of its own. It grows in from one edge as it scrolls past.
+ */
+export function SakuraBreak(props: { side: "left" | "right"; variant?: 0 | 1 }) {
+  const wide = useWide();
+  // The vine mounts in its own component, so its scroll tracking always binds
+  // to it, even when the screen narrows after the page has loaded.
+  return wide ? null : <SakuraVine {...props} />;
+}
+
+function SakuraVine({ side, variant = 0 }: { side: "left" | "right"; variant?: 0 | 1 }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const growth = useScrollGrowth(ref);
+  return (
+    // Zero height: the vine hangs centred on the seam, over the two sections' padding.
+    <div aria-hidden="true" className="pointer-events-none relative z-[2] h-0">
+      <div
+        ref={ref}
+        className={cn("absolute top-0 w-[92vw] max-w-[520px] -translate-y-1/2", side === "left" ? "left-0" : "right-0")}
+      >
+        <Growing art={sprigArt.vines[variant]} defs={sprigArt.defs} growth={growth} ease={1.4} flip={side === "right"} className="h-auto w-full" />
+      </div>
     </div>
   );
 }

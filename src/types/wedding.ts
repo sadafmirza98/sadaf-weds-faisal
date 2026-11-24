@@ -128,8 +128,6 @@ export interface Contact {
 }
 
 export interface EasterEggs {
-  /** Revealed after clicking the hero moon three times. */
-  moonMessage: string;
   /** The folded note hidden behind the small seal in the closing section. */
   secretLetter: { salutation: string; body: string; signature: string };
 }
