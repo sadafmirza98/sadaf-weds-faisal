@@ -32,20 +32,18 @@ export function VenueMap() {
   const { venueMap } = wedding;
   const { events } = useInvite();
   const venues = inviteVenues(events);
-  const gapRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
-  // The comet flies across the gap between the intro line and the map as it
-  // scrolls through the screen: in from the right as the gap rises from the
-  // bottom, through the middle at mid-screen, out to the left near the top
-  // (and back again on the way up). Tilted to a shallow angle about its head,
-  // so it travels along the gap rather than dropping onto the map.
-  const { scrollYProgress } = useScroll({ target: gapRef, offset: ["start end", "start start"] });
-  const cometX = useTransform(scrollYProgress, [0, 1], ["62vw", "-62vw"]);
-  const cometY = useTransform(scrollYProgress, [0, 1], ["-5.4vw", "5.4vw"]);
+  // The comet travels with the scroll: forward (down and to the left, along
+  // its tail) as you scroll down, back again as you scroll up. It sits where it
+  // was placed when the heading is in view (progress ≈ 0.38).
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start end", "end start"] });
+  const cometX = useTransform(scrollYProgress, [0, 0.38, 1], ["125%", "0%", "-320%"]);
+  const cometY = useTransform(scrollYProgress, [0, 0.38, 1], ["-117%", "0%", "300%"]);
   if (!venues.length) return null;
 
   return (
-    <section id="venue" aria-labelledby="venue-title" className="section-y relative isolate overflow-hidden">
+    <section ref={sectionRef} id="venue" aria-labelledby="venue-title" className="section-y relative isolate overflow-hidden">
       {/* desktop: a sakura sprig grows in from the margin as this scrolls into view */}
       <SideSakura side="right" variant={1} className="bottom-[6%]" />
       {/* Twilight: night above, a violet hour, then the last burgundy light */}
@@ -54,6 +52,13 @@ export function VenueMap() {
         className="absolute inset-0 -z-20 bg-[linear-gradient(180deg,transparent_0%,rgba(30,24,62,0.55)_30%,rgba(64,13,32,0.5)_72%,transparent_100%)]"
       />
       <div aria-hidden="true" className="starfield absolute inset-0 -z-20 animate-twinkle opacity-60" />
+      <motion.div
+        aria-hidden="true"
+        style={reduce ? undefined : { x: cometX, y: cometY }}
+        className="pointer-events-none absolute -right-[20%] top-[3%] -z-10 w-[70vw] opacity-90 sm:-right-[6%] sm:top-[5%] sm:w-[min(46vw,560px)]"
+      >
+        <Comet className="w-full" />
+      </motion.div>
       <Illustration name="floral-spray" className="pointer-events-none absolute -left-24 bottom-24 hidden w-56 -scale-x-100 opacity-30 lg:block" />
 
       <div className="shell relative">
@@ -61,18 +66,7 @@ export function VenueMap() {
           <SectionHeading id="venue-title" eyebrow={venueMap.eyebrow} title={venueMap.title} intro={venueMap.intro} />
         </Reveal>
 
-        {/* The comet's path: a zero-height line through the gap below the intro */}
-        <div ref={gapRef} aria-hidden="true" className="pointer-events-none relative mt-10 h-0 sm:mt-14">
-          {/* positioned so the comet's head (at 33.8% × 64.5% of its box) sits on the line, centred */}
-          <motion.div
-            style={reduce ? undefined : { x: cometX, y: cometY }}
-            className="absolute left-[calc(50%-23.7vw)] top-[-16.6vw] w-[70vw] sm:left-[calc(50%-min(46vw,560px)*0.338)] sm:top-[calc(min(46vw,560px)*-0.237)] sm:w-[min(46vw,560px)]"
-          >
-            <Comet className="w-full origin-[33.8%_64.5%] rotate-[14deg] opacity-95" />
-          </motion.div>
-        </div>
-
-        <div className="mt-10 space-y-24 sm:mt-14">
+        <div className="mt-14 space-y-24 sm:mt-20">
           {venues.map(({ venue, events: names }) => (
             <VenueCard key={`${venue.name}|${venue.address}`} venue={venue} eventNames={names} />
           ))}
