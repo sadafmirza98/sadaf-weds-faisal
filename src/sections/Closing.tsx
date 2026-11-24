@@ -105,9 +105,8 @@ export function Closing() {
           </p>
         </Reveal>
 
-        {/* Easter eggs: a blossom and a tiny seal hiding a letter */}
+        {/* Easter egg: a tiny seal hiding a letter */}
         <div className="mt-16 flex items-center gap-8">
-          <SakuraBurst size={34} label="A falling blossom" />
           <button
             ref={sealRef}
             type="button"
@@ -201,7 +200,12 @@ export function Closing() {
           </figure>
         </Reveal>
 
-        <div className="mt-16 w-full border-t border-gold/10 pt-8 text-[0.6rem] uppercase tracking-[0.3em] text-ivory/35">
+        {/* the last flourish: a blossom to tap, below the verse */}
+        <div className="mt-12">
+          <SakuraBurst size={34} label="A falling blossom" />
+        </div>
+
+        <div className="mt-12 w-full border-t border-gold/10 pt-8 text-[0.6rem] uppercase tracking-[0.3em] text-ivory/35">
           {closing.developedBy && (
             <p className="text-ivory/45">
               {" "}
