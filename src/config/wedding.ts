@@ -106,7 +106,7 @@ export const wedding: WeddingConfig = {
 
   // Starts when the guest taps the wax seal; a button lets them pause it.
   music: {
-    youtubeId: "RMMNmCTEkWc", // "Suzume (Instrumental)" — https://youtu.be/RMMNmCTEkWc
+    youtubeId: "bF8cwOvHW3M", // "sparkle (Piano Instrumental)" — https://youtu.be/bF8cwOvHW3M
     volume: 55,
   },
 
