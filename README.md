@@ -57,7 +57,7 @@ Edit [`src/config/wedding.ts`](src/config/wedding.ts). Every placeholder is mark
 | Invitation cover text   | `invitation`                                         |
 | Hero text               | `hero.message` (the line above the names lists the guest's events) |
 | Verse & families        | `blessing` (verse, reference); parents via `couple.partnerOne/Two.family` — the families block shows once set |
-| Events (any number)     | [`src/config/events.ts`](src/config/events.ts) — name, start/end, optional venue, description, optional `schedule[]` (e.g. Bidai) |
+| Events (any number)     | [`src/config/events.ts`](src/config/events.ts) — name, start/end, optional venue, description, optional `note` (the line under it in the timeline), optional `schedule[]` (e.g. Rukhsati) |
 | Plain link's events     | `defaultInviteEvents` in `src/config/events.ts` |
 | Music                   | `music.youtubeId`, `music.volume` |
 | Google Maps links       | `events[].venue.mapsUrl` (optional; otherwise built from name + address) |
@@ -65,7 +65,7 @@ Edit [`src/config/wedding.ts`](src/config/wedding.ts). Every placeholder is mark
 | Save the Date calendar  | `saveTheDate` (the month comes from the guest's main event; every invited day gets a heart) |
 | Personalised links      | the admin page — see *Invite links* |
 | RSVP settings           | `rsvp`: optional deadline, max guests per reply          |
-| Contact & WhatsApp      | `contact.phone` — shown on the site and receives the WhatsApp RSVPs |
+| Contact & WhatsApp      | `contact.phone` (calls) and `contact.whatsapp` (receives the WhatsApp RSVPs) |
 | Closing message         | `closing`                                            |
 | Navigation              | `nav`                                                |
 | Easter-egg text         | `easterEggs`                                         |
@@ -116,9 +116,9 @@ The plain link (`/`) shows `defaultInviteEvents`. To add an event, add it to `sr
 
 ## RSVP: sent on WhatsApp
 
-There is no backend. The form (React Hook Form + Zod) collects the guest's name, whether they can attend, the number of guests and an optional note. The message lists the events on the guest's invite automatically. It then shows the reply as a ready-written message with a **Send on WhatsApp** button. That button opens `https://wa.me/<contact.phone>?text=…`, and the guest presses send in WhatsApp.
+There is no backend. The form (React Hook Form + Zod) collects the guest's name, whether they can attend, the number of guests and an optional note. The message lists the events on the guest's invite automatically. It then shows the reply as a ready-written message with a **Send on WhatsApp** button. That button opens `https://wa.me/<contact.whatsapp>?text=…`, and the guest presses send in WhatsApp.
 
-- Replies arrive in the WhatsApp chat of `contact.phone`. Nothing is stored by the site.
+- Replies arrive in the WhatsApp chat of `contact.whatsapp`. Nothing is stored by the site.
 - The site never claims a reply was sent. It says the reply reaches the couple once the guest presses send in WhatsApp.
 - Guests can edit their reply before sending, or start a new one for another guest.
 - An optional `rsvp.deadline` replaces the form with a "replies closed" message after that moment.

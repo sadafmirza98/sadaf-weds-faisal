@@ -1,3 +1,6 @@
+"use client";
+
+import { motion, useReducedMotion } from "motion/react";
 import { cn } from "@/lib/utils";
 
 /** Four-point sparkle centred on 0,0 with radius 1 (scaled with a transform). */
@@ -5,11 +8,13 @@ const SPARKLE = "M0 -1C0.12 -0.3 0.3 -0.12 1 0C0.3 0.12 0.12 0.3 0 1C-0.12 0.3 -
 
 /**
  * A slender pearl-and-champagne crescent with a twinkling star — inline SVG so
- * the glow and star can animate with CSS. Purely decorative; interactive
+ * the glow and star can animate with CSS. A warm glow hugs it, and a soft band
+ * of light sweeps across it every few seconds. Purely decorative; interactive
  * wrappers add their own semantics.
  */
 export function Moon({ className, glow = true, idPrefix = "moon" }: { className?: string; glow?: boolean; idPrefix?: string }) {
   const g = (s: string) => `${idPrefix}-${s}`;
+  const reduce = useReducedMotion();
   return (
     <div className={cn("relative aspect-square", className)} aria-hidden="true">
       {glow && (
@@ -40,14 +45,38 @@ export function Moon({ className, glow = true, idPrefix = "moon" }: { className?
           <filter id={g("halo")} x="-30%" y="-30%" width="160%" height="160%">
             <feGaussianBlur stdDeviation="5" />
           </filter>
+          <filter id={g("glow")} x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="11" />
+          </filter>
+          {/* a band of light that sweeps across the crescent now and then */}
+          <linearGradient id={g("shimmer")} x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stopColor="#FFFFFF" stopOpacity="0" />
+            <stop offset="0.5" stopColor="#FFFFFF" stopOpacity="0.7" />
+            <stop offset="1" stopColor="#FFFFFF" stopOpacity="0" />
+          </linearGradient>
         </defs>
 
-        {/* soft halo hugging the crescent */}
-        <circle cx="100" cy="100" r="72" fill="#F3E3C3" opacity="0.35" mask={`url(#${g("cut")})`} filter={`url(#${g("halo")})`} />
+        {/* warm glow, then a soft halo hugging the crescent */}
+        <circle cx="100" cy="100" r="72" fill="#E9C98F" opacity="0.35" mask={`url(#${g("cut")})`} filter={`url(#${g("glow")})`} />
+        <circle cx="100" cy="100" r="72" fill="#F3E3C3" opacity="0.5" mask={`url(#${g("cut")})`} filter={`url(#${g("halo")})`} />
         {/* the crescent */}
         <g mask={`url(#${g("cut")})`}>
           <circle cx="100" cy="100" r="72" fill={`url(#${g("body")})`} />
           <circle cx="100" cy="100" r="72" fill={`url(#${g("sheen")})`} />
+          {!reduce && (
+            <g transform="rotate(-35 100 100)">
+              <motion.rect
+                x="-60"
+                y="-40"
+                width="60"
+                height="280"
+                fill={`url(#${g("shimmer")})`}
+                initial={{ x: 0 }}
+                animate={{ x: [0, 300] }}
+                transition={{ duration: 2.6, delay: 2.5, repeat: Infinity, repeatDelay: 6.5, ease: [0.45, 0, 0.25, 1] }}
+              />
+            </g>
+          )}
           <circle cx="100" cy="100" r="71.3" fill="none" stroke="#FFF8EC" strokeOpacity="0.7" strokeWidth="1.2" />
         </g>
 

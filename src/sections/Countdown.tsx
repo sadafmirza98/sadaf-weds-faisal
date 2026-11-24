@@ -10,6 +10,7 @@ import { Illustration } from "@/components/art/Illustration";
 import { Ornament } from "@/components/art/Ornament";
 import { useCountdown } from "@/hooks/useCountdown";
 import { formatFullDate, formatTime, hasTime, zonedTimeToUtc } from "@/lib/time";
+import { SideSakura } from "@/components/art/GrowingSakura";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -84,6 +85,8 @@ export function Countdown() {
 
   return (
     <section id="countdown" aria-labelledby="countdown-title" className="relative isolate overflow-hidden py-[clamp(5rem,16vw,12rem)]">
+      {/* a sakura sprig grows in from the side as this scrolls into view */}
+      <SideSakura side="right" variant={2} className="bottom-[2%] lg:bottom-auto lg:top-[8%]" />
       <div aria-hidden="true" className="starfield absolute inset-0 -z-20 animate-twinkle opacity-60" />
       <ShootingStars className="-z-20" count={3} />
       <div aria-hidden="true" className="absolute inset-0 -z-20 bg-[radial-gradient(ellipse_60%_55%_at_50%_100%,rgba(116,29,53,0.45),transparent_70%)]" />

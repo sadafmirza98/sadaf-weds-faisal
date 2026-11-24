@@ -1,10 +1,10 @@
 import { wedding } from "@/config/wedding";
 import type { Person } from "@/types/wedding";
 import { Reveal } from "@/components/animations/Reveal";
-import { SakuraBurst } from "@/components/animations/SakuraBurst";
 import { Illustration } from "@/components/art/Illustration";
 import { Ornament } from "@/components/art/Ornament";
 import { RedThread } from "@/components/art/RedThread";
+import { SideSakura } from "@/components/art/GrowingSakura";
 
 /**
  * The families, as on a Nikah card — straight after the hero.
@@ -17,6 +17,8 @@ export function Families() {
 
   return (
     <section id="families" aria-labelledby="families-title" className="section-y relative overflow-hidden">
+      {/* a sakura sprig grows in from the side as this scrolls into view */}
+      <SideSakura side="right" variant={0} className="top-[6%]" />
       <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
       <Illustration name="floral-corner" className="absolute -left-24 top-16 hidden w-80 -scale-y-100 opacity-25 lg:block" />
       <Illustration name="floral-corner" className="absolute -right-24 bottom-0 hidden w-80 rotate-180 opacity-25 lg:block" />
@@ -34,44 +36,6 @@ export function Families() {
             <RedThread className="mx-auto w-44 sm:w-48" />
             <Family person={couple.partnerTwo} />
           </div>
-        </Reveal>
-      </div>
-    </section>
-  );
-}
-
-/** The Quran verse — near the end, just before the closing thank-you. */
-export function Blessing() {
-  const { blessing } = wedding;
-
-  return (
-    <section id="blessing" aria-labelledby="blessing-title" className="section-y relative overflow-hidden">
-      <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
-
-      <div className="shell relative flex flex-col items-center text-center">
-        <h2 id="blessing-title" className="sr-only">
-          A verse for our wedding
-        </h2>
-
-        <Reveal>
-          <Ornament width="w-40" />
-        </Reveal>
-
-        <Reveal delay={0.1} className="mt-10 max-w-3xl">
-          <figure>
-            <blockquote className="font-display text-[clamp(1.55rem,3.6vw,2.6rem)] font-light italic leading-snug text-ivory/90 text-balance">
-              <p>“{blessing.verse}”</p>
-            </blockquote>
-            <figcaption className="eyebrow mt-8 flex items-center justify-center gap-4 text-[0.625rem] text-gold/85">
-              <span className="h-px w-8 bg-gold/40" aria-hidden="true" />
-              {blessing.cite}
-              <span className="h-px w-8 bg-gold/40" aria-hidden="true" />
-            </figcaption>
-          </figure>
-        </Reveal>
-
-        <Reveal delay={0.2} className="mt-10">
-          <SakuraBurst size={40} label="A sakura blossom" />
         </Reveal>
       </div>
     </section>

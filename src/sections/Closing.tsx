@@ -13,12 +13,13 @@ import { Ornament } from "@/components/art/Ornament";
 import { ShootingStars } from "@/components/art/ShootingStars";
 import { WaxSeal } from "@/components/art/WaxSeal";
 import { formatDottedDate, parseLocal } from "@/lib/time";
+import { SideSakura } from "@/components/art/GrowingSakura";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-/** SECTION H — closing thank-you, secret letter easter egg and return to top. */
+/** SECTION H — closing thank-you, secret letter easter egg, return to top and the closing Quran verse. */
 export function Closing() {
-  const { closing, couple, easterEggs } = wedding;
+  const { blessing, closing, couple, easterEggs } = wedding;
   const { primary } = useInvite();
   const [letterOpen, setLetterOpen] = useState(false);
   const sealRef = useRef<HTMLButtonElement>(null);
@@ -52,6 +53,8 @@ export function Closing() {
       aria-labelledby="closing-title"
       className="relative overflow-hidden pb-10 pt-[var(--section-y)]"
     >
+      {/* a sakura sprig grows in from the side as this scrolls into view */}
+      <SideSakura side="left" variant={1} className="top-[22%]" />
       <div
         aria-hidden="true"
         className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_70%_60%_at_50%_100%,rgba(92,16,41,0.5),transparent_70%)]"
@@ -173,7 +176,32 @@ export function Closing() {
           Back to the beginning
         </button>
 
-        <div className="mt-20 w-full border-t border-gold/10 pt-8 text-[0.6rem] uppercase tracking-[0.3em] text-ivory/35">
+        {/* The last word: a verse from the Quran, Surah Ar-Rum 30:21 */}
+        <Reveal className="mt-20 w-full max-w-3xl">
+          <figure aria-labelledby="closing-verse-cite">
+            <Ornament className="mx-auto" width="w-32" />
+            <p
+              lang="ar"
+              dir="rtl"
+              className="gold-text mt-10 px-2 py-2 font-arabic text-[clamp(1.5rem,4.4vw,2.4rem)] leading-[2] text-balance"
+            >
+              {blessing.arabic}
+            </p>
+            <blockquote className="mx-auto mt-6 max-w-2xl font-display text-[clamp(1.15rem,2.6vw,1.5rem)] font-light italic leading-relaxed text-ivory/80 text-pretty">
+              <p>“{blessing.verse}”</p>
+            </blockquote>
+            <figcaption
+              id="closing-verse-cite"
+              className="eyebrow mt-7 flex items-center justify-center gap-4 text-[0.625rem] text-gold/85"
+            >
+              <span className="h-px w-8 bg-gold/40" aria-hidden="true" />
+              {blessing.cite}
+              <span className="h-px w-8 bg-gold/40" aria-hidden="true" />
+            </figcaption>
+          </figure>
+        </Reveal>
+
+        <div className="mt-16 w-full border-t border-gold/10 pt-8 text-[0.6rem] uppercase tracking-[0.3em] text-ivory/35">
           {closing.developedBy && (
             <p className="text-ivory/45">
               {" "}

@@ -27,7 +27,7 @@ const defaults: RsvpFormInput = {
 
 /**
  * RSVP without a backend: the form validates the reply, then hands it to
- * WhatsApp as a pre-written message to `contact.phone`. Nothing is stored
+ * WhatsApp as a pre-written message to `contact.whatsapp`. Nothing is stored
  * or sent by the site itself — the reply arrives when the guest presses send.
  */
 export function RsvpForm() {
@@ -139,7 +139,7 @@ export function RsvpForm() {
             </pre>
 
             <a
-              href={whatsappUrl(contact.phone, ready.text)}
+              href={whatsappUrl(contact.whatsapp, ready.text)}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setOpened(true)}
@@ -149,7 +149,7 @@ export function RsvpForm() {
               Send on WhatsApp
               <span className="sr-only"> (opens WhatsApp in a new tab)</span>
             </a>
-            <p className="mt-3 text-[0.65rem] uppercase tracking-[0.25em] text-ivory/40">To {contact.phone}</p>
+            <p className="mt-3 text-[0.65rem] uppercase tracking-[0.25em] text-ivory/40">To {contact.whatsapp}</p>
 
             <div className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 border-t border-gold/15 pt-6">
               <button type="button" onClick={edit} className="link-luxe">

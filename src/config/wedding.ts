@@ -41,7 +41,8 @@ export const wedding: WeddingConfig = {
 
   invitation: {
     bismillah: {
-      arabic: "بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ",
+      text: "بسم اللہ الرحمٰن الرحیم",
+      lang: "ur",
       translation: "In the name of Allah, the Most Gracious, the Most Merciful",
     },
     eyebrow: "Together with their families",
@@ -57,6 +58,8 @@ export const wedding: WeddingConfig = {
   },
 
   blessing: {
+    arabic:
+      "وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً",
     verse:
       "And of His signs is that He created for you from yourselves mates that you may find tranquillity in them; and He placed between you affection and mercy.",
     cite: "Surah Ar-Rum · 30:21",
@@ -69,6 +72,12 @@ export const wedding: WeddingConfig = {
     intro: "Everything you need to find your way to us.",
     timeToBeAnnounced: "Timings to follow",
     venueToBeAnnounced: "Venue to follow",
+  },
+
+  venueMap: {
+    eyebrow: "Find your way",
+    title: "Where our threads meet",
+    intro: "At twilight, every road leads here. Follow the red thread to us.",
   },
 
   countdown: {
@@ -103,7 +112,8 @@ export const wedding: WeddingConfig = {
 
   contact: {
     eyebrow: "For any queries",
-    phone: "+91 84337 83337", // also receives the WhatsApp RSVPs
+    phone: "+91 84337 83337", // for calls
+    whatsapp: "+91 97026 00616", // receives the WhatsApp RSVPs
   },
 
   closing: {
@@ -118,6 +128,7 @@ export const wedding: WeddingConfig = {
     { id: "celebrations", label: "Celebrations" },
     { id: "countdown", label: "Countdown" },
     { id: "calendar", label: "Save the Date" },
+    { id: "venue", label: "Venue" },
     { id: "rsvp", label: "RSVP" },
   ],
 

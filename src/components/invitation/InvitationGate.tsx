@@ -8,7 +8,7 @@ import { useMusic } from "@/components/music/MusicProvider";
 import { useInvite } from "@/components/layout/InviteProvider";
 import { inviteMessage } from "@/lib/invite-copy";
 import { ScriptName } from "@/components/animations/ScriptName";
-import { Moon } from "@/components/art/Moon";
+import { AnimeMoon } from "@/components/art/AnimeMoon";
 import { ShootingStars } from "@/components/art/ShootingStars";
 import { Illustration } from "@/components/art/Illustration";
 import { Bismillah } from "@/components/art/Bismillah";
@@ -151,7 +151,7 @@ export function InvitationGate() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   transition={{ duration: 2, delay: 0.4, ease: EASE }}
                 >
-                  <Moon idPrefix="gate-moon" />
+                  <AnimeMoon idPrefix="gate-moon" />
                 </motion.div>
 
                 <div className="flex flex-col items-center">

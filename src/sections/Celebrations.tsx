@@ -7,6 +7,7 @@ import { Illustration } from "@/components/art/Illustration";
 import { SectionHeading } from "@/components/art/Ornament";
 import { EventComposition } from "@/components/events/EventComposition";
 import { hasTime } from "@/lib/time";
+import { SideSakura } from "@/components/art/GrowingSakura";
 
 /**
  * SECTION D — the guest's main day (the day of their primary event, e.g.
@@ -22,6 +23,8 @@ export function Celebrations() {
 
   return (
     <section id="celebrations" aria-labelledby="celebrations-title" className="section-y relative overflow-hidden bg-[radial-gradient(ellipse_70%_40%_at_50%_0%,rgba(64,13,32,0.55),transparent_70%)]">
+      {/* a sakura sprig grows in from the side as this scrolls into view */}
+      <SideSakura side="left" variant={1} className="top-[34%]" />
       <Illustration name="floral-spray" className="absolute -right-24 top-40 hidden w-64 opacity-40 lg:block" />
       <Illustration name="floral-spray" className="absolute -left-28 bottom-40 hidden w-56 -scale-x-100 opacity-30 lg:block" />
 

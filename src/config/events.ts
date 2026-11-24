@@ -19,6 +19,8 @@ const banquet: Venue = {
     "Dilshad Banquet, 1st Floor, E.E. Heights, above Jaffer Bhai's Delhi Darbar Restaurant, Jogeshwari West, Mumbai 400102",
   mapsUrl:
     "http://google.com/maps/place/The+Grand+FM+Banquet/@19.1374952,72.8458317,17z/data=!3m1!4b1!4m6!3m5!1s0x3be7b631b5978847:0x9570c62616af2660!8m2!3d19.1374952!4d72.8458317!16s%2Fg%2F11cp7fdv_p?entry=ttu&g_ep=EgoyMDI2MTExMC4wIKXMDSoASAFQAw%3D%3D",
+  // The pin from the Google Maps place link above (!3d…!4d…).
+  coordinates: { lat: 19.1374952, lng: 72.8458317 },
 };
 
 export const events: WeddingEvent[] = [
@@ -47,6 +49,7 @@ export const events: WeddingEvent[] = [
     start: "2026-12-19T19:00",
     end: "2026-12-19T20:00",
     venue: banquet,
+    note: "Our sacred vows — we each say “Qubool Hai” (“I accept”) three times, and two lives become one.",
     description:
       "We will be joined in marriage in the presence of our families and loved ones. Your presence and your duas would mean the world to us.",
   },
@@ -57,13 +60,14 @@ export const events: WeddingEvent[] = [
     start: "2026-12-19T20:00",
     end: "2026-12-19T23:00",
     venue: banquet,
+    note: "A feast and an evening of joy with everyone we love, to celebrate our new beginning.",
     description:
-      "An evening of celebration with our families and friends, ending with the Bidai.",
+      "An evening of celebration with our families and friends, ending with the Rukhsati.",
     schedule: [
       {
         time: "2026-12-19T23:00",
-        title: "Bidai",
-        note: "The bride's farewell",
+        title: "Rukhsati",
+        note: "The bride’s farewell, as she leaves her family home wrapped in their duas.",
       },
     ],
   },

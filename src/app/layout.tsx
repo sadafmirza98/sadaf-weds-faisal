@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Amiri, Cormorant_Garamond, Inter, Monsieur_La_Doulaise, Playfair_Display } from "next/font/google";
+import { Amiri, Cormorant_Garamond, Inter, Monsieur_La_Doulaise, Noto_Nastaliq_Urdu, Playfair_Display } from "next/font/google";
 import { wedding } from "@/config/wedding";
 import { siteUrl } from "@/lib/site";
 import "./globals.css";
@@ -34,7 +34,15 @@ const royalScript = Monsieur_La_Doulaise({
   display: "swap",
 });
 
-/** Arabic display face for the Bismillah line only. */
+/** Urdu Nastaliq for the opening Bismillah. */
+const nastaliq = Noto_Nastaliq_Urdu({
+  variable: "--font-nastaliq",
+  subsets: ["arabic"],
+  weight: ["500"],
+  display: "swap",
+});
+
+/** Arabic Naskh for the closing Quran verse. */
 const amiri = Amiri({
   variable: "--font-amiri",
   subsets: ["arabic"],
@@ -82,7 +90,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${playfair.variable} ${inter.variable} ${amiri.variable} ${royalScript.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${cormorant.variable} ${playfair.variable} ${inter.variable} ${amiri.variable} ${nastaliq.variable} ${royalScript.variable}`} suppressHydrationWarning>
       <head>
         {/* ?open=1 links skip the invitation cover before first paint. */}
         <script dangerouslySetInnerHTML={{ __html: skipGateScript }} />

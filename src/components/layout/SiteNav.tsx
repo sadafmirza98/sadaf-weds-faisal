@@ -8,6 +8,7 @@ import { useInvite } from "@/components/layout/InviteProvider";
 import { Illustration } from "@/components/art/Illustration";
 import { useActiveSection } from "@/hooks/useActiveSection";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
+import { inviteVenues } from "@/lib/maps";
 import { formatDottedDate } from "@/lib/time";
 import { cn } from "@/lib/utils";
 
@@ -15,10 +16,13 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 
 export function SiteNav() {
   const { phase, returnToGate } = useExperience();
-  const { primary } = useInvite();
+  const { events, primary } = useInvite();
+  // The venue section only exists when the guest's events have a venue.
+  const hasVenue = inviteVenues(events).length > 0;
+  const nav = wedding.nav.filter((n) => n.id !== "venue" || hasVenue);
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const active = useActiveSection(wedding.nav.map((n) => n.id));
+  const active = useActiveSection(nav.map((n) => n.id));
   const { scrollY } = useScroll();
   const menuButton = useRef<HTMLButtonElement>(null);
   const firstLink = useRef<HTMLAnchorElement>(null);
@@ -88,7 +92,7 @@ export function SiteNav() {
           </a>
 
           <ul className="hidden items-center gap-9 lg:flex">
-            {wedding.nav.map((item) => (
+            {nav.map((item) => (
               <li key={item.id}>
                 <a
                   href={`#${item.id}`}
@@ -139,7 +143,7 @@ export function SiteNav() {
           >
             <Illustration name="floral-corner" className="absolute -bottom-16 -right-16 w-[80vw] max-w-md rotate-180 opacity-70" />
             <ul className="shell flex flex-1 flex-col justify-center gap-2">
-              {wedding.nav.map((item, i) => (
+              {nav.map((item, i) => (
                 <motion.li
                   key={item.id}
                   initial={{ opacity: 0, y: 24 }}

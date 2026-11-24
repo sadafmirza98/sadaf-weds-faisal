@@ -1,62 +1,20 @@
 "use client";
 
-import { CalendarPlus, Clock, MapPin } from "lucide-react";
+import { CalendarHeart, Clock, MapPin } from "lucide-react";
 import { wedding } from "@/config/wedding";
-import type { LocalDateTime, WeddingEvent } from "@/types/wedding";
+import type { WeddingEvent } from "@/types/wedding";
 import { Reveal } from "@/components/animations/Reveal";
-import { downloadIcs, googleCalendarUrl } from "@/lib/calendar";
-import { mapsUrl } from "@/lib/maps";
-import { formatLongDate, formatTime, formatTimeRange, hasTime, weekdayOf, parseLocal, zonedTimeToUtc } from "@/lib/time";
-import { coupleNames, joinNames } from "@/lib/utils";
-
-interface Moment {
-  time: string;
-  title: string;
-  note?: string;
-}
+import { planDay } from "@/lib/calendar";
+import { formatLongDate, formatTime, formatTimeRange, weekdayOf, parseLocal, zonedTimeToUtc } from "@/lib/time";
 
 /**
  * One day of celebrations as a single editorial spread: the date, the
- * evening's timeline (each event plus extra moments such as the Bidai),
- * one venue and one "add to calendar" for the whole day.
+ * evening's timeline (each event plus extra moments such as the Rukhsati),
+ * one venue, and links down to the venue map and the Save the Date calendar.
  * `events` are the guest's events on that day, in time order.
  */
 export function EventComposition({ events }: { events: WeddingEvent[] }) {
-  const [first] = events;
-  const names = joinNames(
-    events.map((e) => e.name),
-    " & ",
-  );
-  const timed = hasTime(first.start);
-
-  const moments: Moment[] = timed
-    ? events
-        .flatMap((e) => [{ time: e.start as string, title: e.name }, ...(e.schedule ?? [])])
-        .sort((a, b) => a.time.localeCompare(b.time))
-    : [];
-  // The day ends at the latest end time or extra moment, if it is after the start.
-  const lastMoment = [...events.map((e) => e.end), ...moments.map((m) => m.time)]
-    .filter((t): t is string => Boolean(t))
-    .sort()
-    .pop();
-  const end = timed && lastMoment && lastMoment > first.start ? (lastMoment as LocalDateTime) : undefined;
-  const venue = events.find((e) => e.venue)?.venue;
-
-  // The whole day as one calendar entry.
-  const calendarEvent: WeddingEvent = {
-    id: `day-${first.start.slice(0, 10)}`,
-    name: names,
-    kicker: first.kicker,
-    start: first.start,
-    end,
-    venue,
-    description: [
-      first.description,
-      moments.length > 1 ? moments.map((m) => `${formatTime(m.time)}  ${m.title}`).join("\n") : "",
-    ]
-      .filter(Boolean)
-      .join("\n\n"),
-  };
+  const { first, names, timed, moments, end, venue } = planDay(events);
 
   return (
     <article aria-labelledby="day-title" className="relative grid items-start gap-8 py-12 sm:gap-10 sm:py-16 lg:grid-cols-12 lg:gap-12 lg:py-20">
@@ -131,23 +89,20 @@ export function EventComposition({ events }: { events: WeddingEvent[] }) {
         </dl>
 
         <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-2">
+          {/* Scrolls to the venue map section, which carries the map and the Google Maps links. */}
           {venue && (
-            <a href={mapsUrl(venue)} target="_blank" rel="noopener noreferrer" className="link-luxe">
+            <a href="#venue" className="link-luxe">
               <MapPin className="size-3.5" aria-hidden="true" />
               Get directions
-              <span className="sr-only"> to {venue.name} (opens Google Maps in a new tab)</span>
+              <span className="sr-only"> to {venue.name}</span>
             </a>
           )}
-          <a href={googleCalendarUrl(calendarEvent, wedding.timeZone, coupleNames)} target="_blank" rel="noopener noreferrer" className="link-luxe">
-            <CalendarPlus className="size-3.5" aria-hidden="true" />
-            Google Calendar
-            <span className="sr-only"> (opens in a new tab)</span>
+          {/* Scrolls to the Save the Date calendar, which carries the calendar buttons. */}
+          <a href="#calendar" className="link-luxe">
+            <CalendarHeart className="size-3.5" aria-hidden="true" />
+            Save the date
+            <span className="sr-only"> — add it to your calendar</span>
           </a>
-          <button type="button" onClick={() => downloadIcs(calendarEvent, wedding.timeZone, coupleNames)} className="link-luxe">
-            <CalendarPlus className="size-3.5" aria-hidden="true" />
-            Apple / Outlook
-            <span className="sr-only"> — download calendar file</span>
-          </button>
         </div>
       </Reveal>
     </article>

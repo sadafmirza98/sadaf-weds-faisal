@@ -8,7 +8,9 @@
  *   npm run art
  *
  * Output:
- *   public/illustrations/*.svg   decorative florals used across sections
+ *   public/illustrations/*.svg              decorative florals used across sections
+ *   src/components/art/sakura-branch.json   the hero branch as data, grown on arrival
+ *   src/components/art/sakura-sprigs.json   side sprigs that grow in as the guest scrolls
  */
 import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -136,7 +138,8 @@ function bud(x, y, r, angle, palette = "crimson") {
   );
 }
 
-function sakura(x, y, r, angle, seed, opacity = 1) {
+/** `lite` draws the stamens as dots only (fewer elements, for the many small side sprigs). */
+function sakura(x, y, r, angle, seed, opacity = 1, lite = false) {
   const R = rng(seed);
   let out = `<g transform="translate(${f(x)} ${f(y)}) rotate(${f(angle)})" opacity="${opacity}">`;
   for (let i = 0; i < 5; i++) {
@@ -148,7 +151,9 @@ function sakura(x, y, r, angle, seed, opacity = 1) {
   for (let i = 0; i < 7; i++) {
     const a = (i / 7) * Math.PI * 2 + R();
     const sl = r * (0.38 + R() * 0.12);
-    out += `<line x1="0" y1="0" x2="${f(Math.cos(a) * sl)}" y2="${f(Math.sin(a) * sl)}" stroke="${C.gold}" stroke-width=".7" stroke-opacity=".8"/><circle cx="${f(Math.cos(a) * sl)}" cy="${f(Math.sin(a) * sl)}" r="${f(r * 0.05 + 0.6)}" fill="${C.gold}"/>`;
+    if (lite && i % 2) continue;
+    if (!lite) out += `<line x1="0" y1="0" x2="${f(Math.cos(a) * sl)}" y2="${f(Math.sin(a) * sl)}" stroke="${C.gold}" stroke-width=".7" stroke-opacity=".8"/>`;
+    out += `<circle cx="${f(Math.cos(a) * sl)}" cy="${f(Math.sin(a) * sl)}" r="${f(r * 0.05 + 0.6)}" fill="${C.gold}"/>`;
   }
   return out + `</g>`;
 }
@@ -157,8 +162,13 @@ function petal(x, y, s, angle, opacity = 0.85) {
   return `<path d="M0 0C${f(s * 0.7)} ${f(-s * 0.3)} ${f(s * 0.6)} ${f(-s)} ${f(s * 0.15)} ${f(-s * 1.1)}L0 ${f(-s * 0.95)}L${f(-s * 0.15)} ${f(-s * 1.1)}C${f(-s * 0.6)} ${f(-s)} ${f(-s * 0.7)} ${f(-s * 0.3)} 0 0Z" transform="translate(${f(x)} ${f(y)}) rotate(${f(angle)})" fill="url(#sakura)" opacity="${opacity}"/>`;
 }
 
-/** Recursive organic branch (stroked bezier segments that taper). */
-function branch(x, y, angle, len, width, depth, R, blossoms, color = "#1A0B10") {
+/**
+ * Recursive organic branch (stroked bezier segments that taper).
+ * `rec`, when given, records each segment and how far along the branch it
+ * starts and ends (for the growing hero branch); it never touches the RNG, so
+ * the artwork is identical with or without it.
+ */
+function branch(x, y, angle, len, width, depth, R, blossoms, color = "#1A0B10", rec = null, dist = 0) {
   if (depth === 0 || len < 8) return "";
   const rad = (angle * Math.PI) / 180;
   const bend = (R() - 0.5) * 40;
@@ -166,28 +176,36 @@ function branch(x, y, angle, len, width, depth, R, blossoms, color = "#1A0B10") 
   const my = y + Math.sin(rad + (bend * Math.PI) / 360) * len * 0.5;
   const ex = x + Math.cos(rad) * len;
   const ey = y + Math.sin(rad) * len;
-  let out = `<path d="M${f(x)} ${f(y)}Q${f(mx)} ${f(my)} ${f(ex)} ${f(ey)}" stroke="${color}" stroke-width="${f(width)}" stroke-linecap="round"/>`;
-  out += `<path d="M${f(x)} ${f(y - width * 0.25)}Q${f(mx)} ${f(my - width * 0.25)} ${f(ex)} ${f(ey - width * 0.25)}" stroke="#4A2530" stroke-opacity=".55" stroke-width="${f(Math.max(0.6, width * 0.22))}" stroke-linecap="round"/>`;
-  if (depth <= 2 || R() > 0.55) blossoms.push([ex, ey, depth]);
+  const d = `M${f(x)} ${f(y)}Q${f(mx)} ${f(my)} ${f(ex)} ${f(ey)}`;
+  const hd = `M${f(x)} ${f(y - width * 0.25)}Q${f(mx)} ${f(my - width * 0.25)} ${f(ex)} ${f(ey - width * 0.25)}`;
+  const hw = f(Math.max(0.6, width * 0.22));
+  let out = `<path d="${d}" stroke="${color}" stroke-width="${f(width)}" stroke-linecap="round"/>`;
+  out += `<path d="${hd}" stroke="#4A2530" stroke-opacity=".55" stroke-width="${hw}" stroke-linecap="round"/>`;
+  rec?.segments.push({ d, hd, w: f(width), hw, color, from: f(dist), to: f(dist + len) });
+  if (depth <= 2 || R() > 0.55) blossoms.push([ex, ey, depth, dist + len]);
   const kids = depth > 3 ? 2 : 1 + (R() > 0.4 ? 1 : 0);
   for (let i = 0; i < kids; i++) {
     const na = angle + (i === 0 ? -1 : 1) * (14 + R() * 26) + (R() - 0.5) * 10;
-    out += branch(ex, ey, na, len * (0.62 + R() * 0.16), width * 0.66, depth - 1, R, blossoms, color);
+    out += branch(ex, ey, na, len * (0.62 + R() * 0.16), width * 0.66, depth - 1, R, blossoms, color, rec, dist + len);
   }
   return out;
 }
 
-function sakuraTree(x, y, angle, len, width, depth, seed, blossomScale = 1, color) {
+function sakuraTree(x, y, angle, len, width, depth, seed, blossomScale = 1, color, rec = null, lite = false) {
   const R = rng(seed);
   const blossoms = [];
-  let out = branch(x, y, angle, len, width, depth, R, blossoms, color);
-  for (const [bx, by, d] of blossoms) {
+  let out = branch(x, y, angle, len, width, depth, R, blossoms, color, rec);
+  for (const [bx, by, d, at] of blossoms) {
     const n = d <= 1 ? 3 : 2;
     for (let i = 0; i < n; i++) {
       const ox = bx + (R() - 0.5) * 34 * blossomScale;
       const oy = by + (R() - 0.5) * 30 * blossomScale;
-      if (R() > 0.82) out += bud(ox, oy, 4 * blossomScale, R() * 360, "blush");
-      else out += sakura(ox, oy, (8 + R() * 8) * blossomScale, R() * 72, Math.floor(R() * 1e6), 0.85 + R() * 0.15);
+      const markup =
+        R() > 0.82
+          ? bud(ox, oy, 4 * blossomScale, R() * 360, "blush")
+          : sakura(ox, oy, (8 + R() * 8) * blossomScale, R() * 72, Math.floor(R() * 1e6), 0.85 + R() * 0.15, lite);
+      out += markup;
+      rec?.blossoms.push({ markup, at: f(at) });
     }
   }
   return out;
@@ -270,13 +288,83 @@ function floralGarland() {
   return svg(W, H, commonDefs(), b);
 }
 
-function sakuraBranch() {
+function sakuraBranch(rec = null) {
   const W = 900;
   const H = 560;
-  let b = sakuraTree(920, 80, 165, 260, 14, 6, 51, 1.15);
+  let b = sakuraTree(920, 80, 165, 260, 14, 6, 51, 1.15, undefined, rec);
   const R = rng(52);
-  for (let i = 0; i < 10; i++) b += petal(80 + R() * 700, 200 + R() * 340, 9 + R() * 7, R() * 360, 0.55 + R() * 0.3);
+  for (let i = 0; i < 10; i++) {
+    const markup = petal(80 + R() * 700, 200 + R() * 340, 9 + R() * 7, R() * 360, 0.55 + R() * 0.3);
+    b += markup;
+    rec?.petals.push(markup);
+  }
   return svg(W, H, commonDefs(), b);
+}
+
+/**
+ * The hero's sakura branch as data, so the site can grow it on scroll:
+ * branch segments (with where along the branch each starts and ends) and
+ * blossoms (with when the branch reaches them). Ids are prefixed to stay
+ * unique when inlined into the page.
+ */
+const prefixUrls = (m) => m.replace(/url\(#/g, "url(#sb-");
+/** Only the gradients the sakura and buds use, ids prefixed for inlining. */
+const sakuraDefs = () =>
+  (
+    petalDefs() +
+    `<linearGradient id="sakura" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#8E5A66"/><stop offset=".6" stop-color="#D3A9AF"/><stop offset="1" stop-color="#F4E2E0"/></linearGradient>`
+  ).replace(/id="/g, 'id="sb-');
+
+function sakuraBranchData() {
+  const rec = { segments: [], blossoms: [], petals: [] };
+  sakuraBranch(rec);
+  const length = Math.max(...rec.segments.map((s) => s.to));
+  return (
+    JSON.stringify({
+      viewBox: [0, 0, 900, 560],
+      length,
+      defs: sakuraDefs(),
+      segments: rec.segments,
+      blossoms: rec.blossoms.map((b) => ({ ...b, markup: prefixUrls(b.markup) })),
+      petals: rec.petals.map(prefixUrls),
+    }) + "\n"
+  );
+}
+
+/**
+ * Small sakura sprigs that grow in from the left edge of a section as the
+ * guest scrolls (mirrored on the right). Lighter than the hero branch so
+ * several can sit on one page, even on phones.
+ */
+function sakuraSprigsData() {
+  const variants = [
+    { seed: 71, angle: -24, len: 150, width: 8 },
+    { seed: 74, angle: -6, len: 160, width: 8 },
+    { seed: 77, angle: 14, len: 140, width: 7 },
+  ].map(({ seed, angle, len, width }) => {
+    const rec = { segments: [], blossoms: [], petals: [] };
+    sakuraTree(-10, 220, angle, len, width, 5, seed, 1, "#2A1620", rec, true);
+    // Fit the viewBox to what was drawn (blossoms reach ~20px past their twig).
+    const xs = [];
+    const ys = [];
+    for (const sg of rec.segments) {
+      const n = sg.d.match(/-?\d+(\.\d+)?/g).map(Number);
+      for (let i = 0; i < n.length; i += 2) (xs.push(n[i]), ys.push(n[i + 1]));
+    }
+    const pad = 32;
+    const x0 = 0;
+    const y0 = Math.floor(Math.min(...ys) - pad);
+    const x1 = Math.ceil(Math.max(...xs) + pad);
+    const y1 = Math.ceil(Math.max(...ys) + pad);
+    return {
+      viewBox: [x0, y0, x1 - x0, y1 - y0],
+      length: Math.max(...rec.segments.map((sg) => sg.to)),
+      segments: rec.segments,
+      blossoms: rec.blossoms.map((b) => ({ ...b, markup: prefixUrls(b.markup) })),
+      petals: [],
+    };
+  });
+  return JSON.stringify({ defs: sakuraDefs(), variants }) + "\n";
 }
 
 function floralSpray() {
@@ -315,6 +403,8 @@ const files = {
   [join(ILLU, "floral-garland.svg")]: floralGarland(),
   [join(ILLU, "sakura-branch.svg")]: sakuraBranch(),
   [join(ILLU, "floral-spray.svg")]: floralSpray(),
+  [join(root, "src", "components", "art", "sakura-branch.json")]: sakuraBranchData(),
+  [join(root, "src", "components", "art", "sakura-sprigs.json")]: sakuraSprigsData(),
 };
 for (const [p, content] of Object.entries(files)) {
   writeFileSync(p, content);

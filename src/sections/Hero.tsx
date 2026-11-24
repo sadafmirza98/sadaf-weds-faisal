@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion, useAnimate, useScroll, useTransform } from "motion/react";
+import { AnimatePresence, animate, motion, useAnimate, useMotionValue, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { ArrowDown } from "lucide-react";
 import { wedding } from "@/config/wedding";
@@ -8,9 +8,11 @@ import { useExperience } from "@/components/layout/ExperienceProvider";
 import { useInvite } from "@/components/layout/InviteProvider";
 import { listedEvents } from "@/lib/invite-copy";
 import { ScriptName } from "@/components/animations/ScriptName";
-import { Moon } from "@/components/art/Moon";
+import { AnimeMoon } from "@/components/art/AnimeMoon";
 import { ShootingStars } from "@/components/art/ShootingStars";
 import { Bismillah } from "@/components/art/Bismillah";
+import { ThreadAmpersand } from "@/components/art/ThreadAmpersand";
+import { GrowingSakura } from "@/components/art/GrowingSakura";
 import { Illustration } from "@/components/art/Illustration";
 import { formatLongDate, weekdayOf } from "@/lib/time";
 import { joinNames } from "@/lib/utils";
@@ -27,6 +29,10 @@ export function Hero() {
   const textY = useTransform(scrollYProgress, [0, 1], [0, 110]);
   const textOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
 
+  // The sakura branch grows in over the first few seconds after the page opens.
+  const reduce = useReducedMotion();
+  const sakuraGrowth = useMotionValue(0);
+
   // Easter egg: three taps on the moon reveal a hidden line.
   const [taps, setTaps] = useState(0);
   const [secret, setSecret] = useState(false);
@@ -39,11 +45,21 @@ export function Hero() {
   const onMoon = () => {
     const next = taps + 1;
     setTaps(next);
-    animateMoon(moonScope.current, { scale: [1, 1.04, 1] }, { duration: 0.9, ease: EASE });
+    // A gentle swell on every tap (on top of the hover growth on desktop).
+    animateMoon(moonScope.current, { scale: [1, 1.16, 1.05, 1] }, { duration: 1.1, times: [0, 0.35, 0.7, 1], ease: EASE });
     if (next % 3 === 0) setSecret(true);
   };
 
   const base = revealed ? 0.75 : 0;
+  useEffect(() => {
+    if (!revealed) return;
+    if (reduce) {
+      sakuraGrowth.set(1);
+      return;
+    }
+    const controls = animate(sakuraGrowth, 1, { duration: 3.2, delay: base + 0.2, ease: [0.3, 0, 0.25, 1] });
+    return () => controls.stop();
+  }, [revealed, base, reduce, sakuraGrowth]);
   const rise = (delay: number) => ({
     initial: { opacity: 0, y: 24 },
     animate: revealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 },
@@ -68,15 +84,18 @@ export function Hero() {
         animate={revealed ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
         transition={{ duration: 2.4, delay: base, ease: EASE }}
       >
-        <button
-          ref={moonScope}
-          type="button"
-          onClick={onMoon}
-          aria-label="The moon"
-          className="relative block w-full cursor-pointer rounded-full transition-[filter] duration-700 ease-silk hover:brightness-110"
-        >
-          <Moon idPrefix="hero-moon" />
-        </button>
+        {/* Grows a little on hover (pointer devices only) */}
+        <div className="transition-transform duration-700 ease-silk hover:scale-110">
+          <button
+            ref={moonScope}
+            type="button"
+            onClick={onMoon}
+            aria-label="The moon"
+            className="relative block w-full cursor-pointer rounded-full transition-[filter] duration-700 ease-silk hover:brightness-110"
+          >
+            <AnimeMoon idPrefix="hero-moon" />
+          </button>
+        </div>
       </motion.div>
 
       {/* Florals */}
@@ -87,7 +106,7 @@ export function Hero() {
           animate={revealed ? { opacity: 0.95, x: 0 } : { opacity: 0, x: 60 }}
           transition={{ duration: 2.4, delay: base + 0.2, ease: EASE }}
         >
-          <Illustration name="sakura-branch" eager sizes="(max-width: 1024px) 85vw, 620px" className="h-auto w-full animate-drift" />
+          <GrowingSakura growth={sakuraGrowth} className="h-auto w-full animate-drift" />
         </motion.div>
         <motion.div
           className="absolute -bottom-[14%] -left-[9%] hidden w-[min(15vw,230px)] opacity-60 lg:block"
@@ -126,14 +145,12 @@ export function Hero() {
               <ScriptName text={couple.partnerOne.firstName} play={revealed} delay={base + 0.25} />
             </span>
             <span className="flex items-baseline justify-center gap-[0.18em] short:justify-start short:pl-[0.9em] lg:justify-start lg:pl-[0.9em]">
-              <motion.span
-                className="gold-text font-display text-[0.45em] not-italic"
-                initial={{ opacity: 0, rotate: -12 }}
-                animate={revealed ? { opacity: 1, rotate: 0 } : { opacity: 0, rotate: -12 }}
-                transition={{ duration: 1.4, delay: base + 0.65, ease: EASE }}
-              >
-                &amp;
-              </motion.span>
+              {/* the red thread writes the "&" once the page is revealed */}
+              {revealed ? (
+                <ThreadAmpersand idPrefix="hero-amp" delay={base + 0.65} className="size-[0.5em] shrink-0 self-center" />
+              ) : (
+                <span className="inline-block size-[0.5em] shrink-0 self-center" aria-hidden="true" />
+              )}
               <ScriptName text={couple.partnerTwo.firstName} play={revealed} delay={base + 0.75} />
             </span>
           </h1>

@@ -41,6 +41,8 @@ export interface Venue {
    * from `name` + `address`.
    */
   mapsUrl?: string;
+  /** Exact pin for the embedded map. Without it the map searches `name` + `address`. */
+  coordinates?: { lat: number; lng: number };
 }
 
 export interface DressCode {
@@ -68,11 +70,13 @@ export interface WeddingEvent {
   end?: LocalDateTime;
   /** Optional while unconfirmed — the card shows `celebrations.venueToBeAnnounced`. */
   venue?: Venue;
+  /** Optional short line under the event in the evening's timeline, e.g. "Where we say Qubool Hai". */
+  note?: string;
   /** Optional; the attire row is hidden when omitted. */
   dressCode?: DressCode;
   description: string;
   /**
-   * Optional extra moments after the start, e.g. the Bidai at the end of the
+   * Optional extra moments after the start, e.g. the Rukhsati at the end of the
    * Reception. Shown on the event card and in the day-by-day itinerary.
    */
   schedule?: ScheduleItem[];
@@ -117,8 +121,10 @@ export interface RsvpSettings {
 
 export interface Contact {
   eyebrow: string;
-  /** Shown as written, e.g. "+91 84337 83337". Also the WhatsApp number RSVPs are sent to. */
+  /** Call number, shown as written, e.g. "+91 84337 83337". */
   phone: string;
+  /** WhatsApp number, shown as written. RSVPs are sent here. */
+  whatsapp: string;
 }
 
 export interface EasterEggs {
@@ -148,8 +154,12 @@ export interface WeddingConfig {
   weddingDate: LocalMoment;
   locationLine: string;
   invitation: {
-    /** Optional opening line shown above everything else (e.g. the Bismillah). */
-    bismillah?: { arabic: string; translation: string };
+    /**
+     * Optional opening line shown above everything else (e.g. the Bismillah),
+     * with its meaning in small type beneath. `lang` picks the script's face:
+     * "ur" = Nastaliq, "ar" = Naskh.
+     */
+    bismillah?: { text: string; lang: "ur" | "ar"; translation: string };
     eyebrow: string;
     /** `{events}` is replaced with the guest's invited events, e.g. "Nikah, Reception and Walima". */
     message: string;
@@ -159,11 +169,19 @@ export interface WeddingConfig {
   hero: {
     message: string;
   };
-  /** The verse after the hero, and the heading over the parents' names. */
+  /** The closing Quran verse (Arabic + meaning), and the heading over the parents' names. */
   blessing: {
+    /** The verse in Arabic, shown above its meaning. */
+    arabic: string;
     verse: string;
     cite: string;
     familiesEyebrow: string;
+  };
+  /** The venue map section. */
+  venueMap: {
+    eyebrow: string;
+    title: string;
+    intro: string;
   };
   celebrations: {
     eyebrow: string;
