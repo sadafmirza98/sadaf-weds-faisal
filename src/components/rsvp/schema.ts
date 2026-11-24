@@ -3,6 +3,8 @@ import { wedding } from "@/config/wedding";
 
 const max = wedding.rsvp.maxAttendees;
 
+const attendees = z.number({ error: "Please choose how many will attend." }).int().min(0);
+
 export const rsvpSchema = z
   .object({
     name: z
@@ -11,11 +13,7 @@ export const rsvpSchema = z
       .min(2, "Please enter your full name.")
       .max(80, "Please keep your name under 80 characters."),
     attending: z.enum(["yes", "no"], { error: "Please let us know whether you can join us." }),
-    attendees: z
-      .number({ error: "Please choose how many will attend." })
-      .int()
-      .min(0)
-      .max(max, `Each reply can include up to ${max} guests.`),
+    attendees: max ? attendees.max(max, `Each reply can include up to ${max} guests.`) : attendees,
     message: z.string().trim().max(500, "Please keep your message under 500 characters."),
   })
   .refine((d) => d.attending !== "yes" || d.attendees >= 1, {

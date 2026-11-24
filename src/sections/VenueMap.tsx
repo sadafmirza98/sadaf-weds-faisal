@@ -22,6 +22,20 @@ const EASE = [0.22, 1, 0.36, 1] as const;
  * meet at the venue pin (the centre of the embed). Coordinates are in a
  * 100 × 125 box that matches the arch's 4:5 window.
  */
+/**
+ * Where the threads meet they carry on into the two halves of a heart (the
+ * meeting point is its top dip), which glows, beats once and then gathers
+ * into the knot on the pin.
+ */
+const HEART_HALVES = [
+  "M50 62.5 C 47 56.5, 40.5 56.5, 40.5 62 C 40.5 67, 46 70.5, 50 74",
+  "M50 62.5 C 53 56.5, 59.5 56.5, 59.5 62 C 59.5 67, 54 70.5, 50 74",
+];
+const HEART = "M50 62.5 C 47 56.5, 40.5 56.5, 40.5 62 C 40.5 67, 46 70.5, 50 74 C 54 70.5, 59.5 67, 59.5 62 C 59.5 56.5, 53 56.5, 50 62.5 Z";
+/** Seconds: threads arrive ~2.75; heart drawn by ~3.5; beats; gathers into the knot. */
+const HEART_AT = 2.75;
+const KNOT_AT = 4.7;
+
 const THREADS = [
   "M -4 121 C 14 118, 26 108, 21 98 C 16 88, 30 79, 41 84 C 53 89, 59 77, 50 62.5",
   "M 104 4 C 86 9, 79 21, 84 32 C 89 43, 72 49, 62 44 C 52 39, 45 50, 50 62.5",
@@ -149,20 +163,52 @@ function VenueCard({ venue, eventNames }: { venue: Venue; eventNames: string[] }
                       transition={{ duration: 2.2, delay: 0.2 + i * 0.35, ease: [0.65, 0, 0.35, 1] }}
                     />
                   ))}
+                  {/* the heart they make as they meet, which then gathers into the knot */}
+                  {!reduce && (
+                    <motion.g
+                      style={{ transformOrigin: "50px 65px", transformBox: "view-box" }}
+                      initial={{ scale: 1, opacity: 1 }}
+                      animate={drawn ? { scale: [1, 1, 1.18, 1, 1, 0.12], opacity: [1, 1, 1, 1, 1, 0] } : { scale: 1, opacity: 1 }}
+                      transition={{ duration: KNOT_AT - HEART_AT + 0.4, delay: HEART_AT, times: [0, 0.38, 0.5, 0.62, 0.78, 1], ease: "easeInOut" }}
+                    >
+                      <motion.path
+                        d={HEART}
+                        fill="#D64560"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: drawn ? [0, 0, 0.45, 0.3] : 0 }}
+                        transition={{ duration: 1.4, delay: HEART_AT, times: [0, 0.45, 0.7, 1] }}
+                        style={{ filter: "drop-shadow(0 0 3px rgb(214 69 96 / 0.9))" }}
+                      />
+                      {HEART_HALVES.map((d, i) => (
+                        <motion.path
+                          key={i}
+                          d={d}
+                          stroke={i ? "#D64560" : "#C8344E"}
+                          strokeWidth={0.7}
+                          strokeLinecap="round"
+                          style={{ filter: "drop-shadow(0 0 1.2px rgb(214 69 96 / 0.95))" }}
+                          initial={{ pathLength: 0 }}
+                          animate={{ pathLength: drawn ? 1 : 0 }}
+                          transition={{ duration: 0.75, delay: HEART_AT, ease: [0.45, 0, 0.35, 1] }}
+                        />
+                      ))}
+                    </motion.g>
+                  )}
                 </svg>
                 {/* Where the threads meet */}
                 <motion.span
                   className="absolute left-1/2 top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#D64560] shadow-[0_0_14px_4px_rgba(214,69,96,0.7)]"
                   initial={{ scale: reduce ? 1 : 0 }}
                   animate={{ scale: drawn ? 1 : 0 }}
-                  transition={{ duration: 0.6, delay: reduce ? 0 : 2.6, ease: EASE }}
+                  transition={{ duration: 0.6, delay: reduce ? 0 : KNOT_AT, ease: EASE }}
                 />
                 {!reduce && drawn && (
                   <motion.span
                     className="absolute left-1/2 top-1/2 size-16 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#F0A7B4]/70"
                     initial={{ scale: 0.3, opacity: 0 }}
-                    animate={{ scale: [0.3, 1.6], opacity: [0.8, 0] }}
-                    transition={{ duration: 2.4, delay: 2.9, repeat: Infinity, repeatDelay: 0.8, ease: "easeOut" }}
+                    // starts invisible, so nothing shows while it waits for the knot
+                    animate={{ scale: [0.3, 0.3, 1.6], opacity: [0, 0.8, 0] }}
+                    transition={{ duration: 2.4, delay: KNOT_AT + 0.3, times: [0, 0.02, 1], repeat: Infinity, repeatDelay: 0.8, ease: "easeOut" }}
                   />
                 )}
               </motion.div>

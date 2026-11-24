@@ -22,7 +22,7 @@ function eventLabel(e: WeddingEvent) {
 
 /** The RSVP as a WhatsApp message the guest sends themselves. Lists the events on their invite. */
 export function rsvpMessage(v: RsvpFormValues, invited: WeddingEvent[]) {
-  const lines = [`Assalamu Alaikum! RSVP for ${coupleNames}'s wedding`, "", `Name: ${v.name}`];
+  const lines = [`Hi! RSVP for ${coupleNames}'s wedding`, "", `Name: ${v.name}`];
   lines.push(v.attending === "yes" ? "Reply: Joyfully accepts" : "Reply: Regretfully declines");
   if (v.attending === "yes") lines.push(`Guests: ${v.attendees} (including me)`);
   lines.push(`Invited to: ${invited.map(eventLabel).join(", ")}`);
@@ -32,6 +32,6 @@ export function rsvpMessage(v: RsvpFormValues, invited: WeddingEvent[]) {
 
 /** The message the couple sends a guest with their personal link (admin page). */
 export function inviteShareMessage(guest: string, eventNames: string[], link: string) {
-  const hello = guest.trim() ? `Assalamu Alaikum ${guest.trim()}!` : "Assalamu Alaikum!";
+  const hello = guest.trim() ? `Hi ${guest.trim()}!` : "Hi!";
   return `${hello}\n\nWith the blessings of Allah, we would be honoured to have you with us at our ${joinNames(eventNames)}.\n\nYour invitation: ${link}\n\n— ${coupleNames}`;
 }

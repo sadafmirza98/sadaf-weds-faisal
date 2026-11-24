@@ -115,8 +115,8 @@ export interface RsvpSettings {
   enabled: boolean;
   /** Optional: the form closes after this moment (wedding timezone). */
   deadline?: LocalDateTime;
-  /** Maximum attendees one response may include (including the guest). */
-  maxAttendees: number;
+  /** Optional cap on attendees per response (including the guest). Omit for no limit. */
+  maxAttendees?: number;
 }
 
 export interface Contact {

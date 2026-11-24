@@ -254,14 +254,14 @@ export function RsvpForm() {
                             </output>
                             <button
                               type="button"
-                              onClick={() => field.onChange(Math.min(rsvp.maxAttendees, value + 1))}
-                              disabled={value >= rsvp.maxAttendees}
+                              onClick={() => field.onChange(rsvp.maxAttendees ? Math.min(rsvp.maxAttendees, value + 1) : value + 1)}
+                              disabled={rsvp.maxAttendees !== undefined && value >= rsvp.maxAttendees}
                               className="grid size-11 place-items-center rounded-full border border-gold/30 text-ivory transition-colors hover:border-gold disabled:opacity-30"
                               aria-label="More guests"
                             >
                               <Plus className="size-4" aria-hidden="true" />
                             </button>
-                            <span className="text-xs text-ivory/40">max {rsvp.maxAttendees}</span>
+                            {rsvp.maxAttendees && <span className="text-xs text-ivory/40">max {rsvp.maxAttendees}</span>}
                           </div>
                           <ErrorText id="rsvp-attendees-error" message={errors.attendees?.message} />
                         </div>
