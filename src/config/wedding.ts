@@ -77,7 +77,7 @@ export const wedding: WeddingConfig = {
   venueMap: {
     eyebrow: "Find your way",
     title: "Where our threads meet",
-    intro: "At twilight, every road leads here. Follow the red thread to us.",
+    intro: "At dusk, we await your presence.",
   },
 
   countdown: {
@@ -91,14 +91,13 @@ export const wedding: WeddingConfig = {
   saveTheDate: {
     eyebrow: "Save the Date",
     title: "Mark your calendar",
-    intro: "Held close to our hearts — we cannot wait to celebrate with you.",
+    intro: "We cannot wait to celebrate with you.",
   },
 
   rsvp: {
     eyebrow: "Kindly Reply",
     title: "Will you join us?",
-    intro:
-      "Fill in your reply and send it to us on WhatsApp in one tap, so we can prepare a place for you.",
+    intro: "Fill in your reply and send it to us on WhatsApp in one tap.",
     enabled: true,
     // deadline: "2026-12-12T23:59",  ✎ optional — the form closes after this moment
     // maxAttendees: 4,  optional — caps guests per reply (including the guest); no limit when omitted

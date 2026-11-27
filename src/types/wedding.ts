@@ -86,6 +86,11 @@ export interface WeddingEvent {
    * Shown anyway when it is the guest's only event.
    */
   listed?: boolean;
+  /**
+   * false = its day keeps its heart on the Save the Date calendar, but it is
+   * left out of the list beneath. Shown anyway if nothing else would be.
+   */
+  inCalendarList?: boolean;
 }
 
 /** What one guest's page shows. Built on the server; only these events reach the browser. */

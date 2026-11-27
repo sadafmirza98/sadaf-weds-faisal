@@ -49,7 +49,8 @@ export const events: WeddingEvent[] = [
     start: "2026-12-19T19:00",
     end: "2026-12-19T20:00",
     venue: banquet,
-    note: "Our sacred vows — we each say “Qubool Hai” (“I accept”) three times, and two lives become one.",
+    inCalendarList: false, // the list under the calendar shows Reception for the 19th
+    note: "Our sacred vow — we each say “Qubool Hai” and two lives become one.",
     description:
       "We will be joined in marriage in the presence of our families and loved ones. Your presence and your duas would mean the world to us.",
   },

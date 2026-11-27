@@ -106,6 +106,9 @@ export function SaveTheDate() {
   const monthName = monthOf(primary.start);
   const firstWeekday = new Date(Date.UTC(main.year, main.month - 1, 1)).getUTCDay();
   const daysInMonth = new Date(Date.UTC(main.year, main.month, 0)).getUTCDate();
+  // The list under the calendar (events can opt out, e.g. the Nikah, whose day the Reception already names).
+  const listed = events.filter((e) => e.inCalendarList !== false);
+  const calendarList = listed.length ? listed : events;
   // The guest's main day as one calendar entry (e.g. Nikah & Reception).
   const day = planDay(primaryDayEvents(events, primary));
 
@@ -174,7 +177,7 @@ export function SaveTheDate() {
             </table>
 
             <ul className="mt-8 space-y-3 border-t border-gold/15 pt-6 text-left">
-              {events.map((e) => {
+              {calendarList.map((e) => {
                 const p = parseLocal(e.start);
                 const primary = p.year === main.year && p.month === main.month && p.day === main.day;
                 return (

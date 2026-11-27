@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { useMemo, useSyncExternalStore } from "react";
+import { useMemo } from "react";
 import { wedding } from "@/config/wedding";
 import { Reveal } from "@/components/animations/Reveal";
 import { AnimeClock } from "@/components/art/AnimeClock";
@@ -65,28 +65,6 @@ function romanDate(moment: string) {
   return [day, month, year].map(roman).join(" · ");
 }
 
-const subscribeNoop = () => () => {};
-
-/** The wedding moment expressed in the guest's own timezone (client only). */
-function useGuestLocalTime(target: Date, enabled: boolean) {
-  return useSyncExternalStore(
-    subscribeNoop,
-    () => {
-      if (!enabled) return null;
-      const guestTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      if (!guestTz || guestTz === wedding.timeZone) return null;
-      return new Intl.DateTimeFormat(undefined, {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-        hour: "numeric",
-        minute: "2-digit",
-      }).format(target);
-    },
-    () => null,
-  );
-}
-
 /** SECTION E — live countdown to the configured moment in the configured timezone. */
 export function Countdown() {
   // Every guest counts down to the Nikah (weddingDate), whatever their invite.
@@ -95,7 +73,6 @@ export function Countdown() {
   const left = useCountdown(target.getTime());
   // Date-only start → count to the start of the day; no clock time is shown.
   const timed = hasTime(moment);
-  const guestLocal = useGuestLocalTime(target, timed);
   const done = left !== null && left.total === 0;
   const { countdown } = wedding;
   const zoneLabel = wedding.timeZoneLabel ?? `${wedding.timeZone.split("/").pop()?.replace(/_/g, " ")} time`;
@@ -126,7 +103,6 @@ export function Countdown() {
             {formatFullDate(moment)}
             {timed && ` · ${formatTime(moment)} ${zoneLabel}`}
           </p>
-          {guestLocal && <p className="mt-2 font-display text-base italic text-ivory/45">That is {guestLocal} where you are.</p>}
         </Reveal>
 
         <Reveal delay={0.15} className="mt-12 sm:mt-20">
